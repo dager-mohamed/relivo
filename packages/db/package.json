@@ -1,0 +1,36 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./client": "./src/client.ts",
+    "./orm": "./src/orm.ts"
+  },
+  "scripts": {
+    "db:generate": "dotenv -e ../../.env -- drizzle-kit generate",
+    "db:migrate": "dotenv -e ../../.env -- drizzle-kit migrate",
+    "db:push": "dotenv -e ../../.env -- drizzle-kit push",
+    "db:pull": "dotenv -e ../../.env -- drizzle-kit pull",
+    "db:check": "dotenv -e ../../.env -- drizzle-kit check",
+    "db:up": "dotenv -e ../../.env -- drizzle-kit up",
+    "db:studio": "dotenv -e ../../.env -- drizzle-kit studio",
+    "db:export": "dotenv -e ../../.env -- drizzle-kit export",
+    "db:seed": "dotenv -e ../../.env -- tsx src/scripts/seed.ts",
+    "db:read": "dotenv -e ../../.env -- tsx src/scripts/read.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "1.0.0-rc.4",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "dotenv-cli": "^10.0.0",
+    "drizzle-kit": "1.0.0-rc.4",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.2"
+  }
+}

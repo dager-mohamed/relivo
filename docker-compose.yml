@@ -1,0 +1,40 @@
+services:
+  postgres:
+    # Postgres 17 with the vector extension prebuilt.
+    image: pgvector/pgvector:pg17
+    container_name: relivo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: relivo
+      POSTGRES_PASSWORD: relivo
+      POSTGRES_DB: relivo
+    ports:
+      - "5434:5432"
+    volumes:
+      - relivo-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U relivo -d relivo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: relivo-redis
+    restart: unless-stopped
+    # noeviction is mandatory for BullMQ — any eviction policy lets Redis drop
+    # job state under memory pressure, and jobs vanish with no error.
+    command: redis-server --maxmemory-policy noeviction --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - relivo-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  relivo-pgdata:
+  relivo-redisdata:

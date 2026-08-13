@@ -1,0 +1,27 @@
+{
+  "name": "@repo/jobs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./queues": "./src/queues.ts"
+  },
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- tsx watch src/worker.ts",
+    "start": "dotenv -e ../../.env -- tsx src/worker.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "bullmq": "^5.68.1",
+    "ioredis": "^5.9.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "dotenv-cli": "^10.0.0",
+    "tsx": "^4.23.12",
+    "typescript": "^6.0.2"
+  }
+}
