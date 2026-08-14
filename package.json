@@ -1,6 +1,7 @@
 {
   "name": "relivo",
   "private": true,
+  "license": "AGPL-3.0-only",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -9,7 +10,9 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "eslint": "^9.39.1",
     "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "turbo": "^2.10.9",
     "typescript": "5.9.2"
   },

@@ -10,7 +10,8 @@
     "./trpc": "./src/trpc.ts"
   },
   "scripts": {
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@repo/db": "workspace:*",
@@ -19,6 +20,8 @@
     "superjson": "^2.2.6"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:^",
+    "@repo/typescript-config": "workspace:^",
     "@types/node": "^22.15.3",
     "typescript": "^6.0.2"
   }

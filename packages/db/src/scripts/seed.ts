@@ -1,10 +1,10 @@
-import { client, db } from "../client"
-import { companies, type NewCompany } from "../schema"
+import { client, db } from "../client";
+import { companies, type NewCompany } from "../schema";
 
 const seed: NewCompany = {
   name: "Relivo",
   domain: "relivo.dev",
-}
+};
 
 async function main() {
   // Idempotent — re-running against an existing volume is a no-op.
@@ -12,19 +12,19 @@ async function main() {
     .insert(companies)
     .values(seed)
     .onConflictDoNothing({ target: companies.domain })
-    .returning()
+    .returning();
 
-  const row = inserted[0]
+  const row = inserted[0];
 
   if (row) {
-    console.log(`inserted company ${row.id} (${row.domain})`)
+    console.log(`inserted company ${row.id} (${row.domain})`);
   } else {
-    console.log(`company ${seed.domain} already present — nothing to do`)
+    console.log(`company ${seed.domain} already present — nothing to do`);
   }
 }
 
 try {
-  await main()
+  await main();
 } finally {
-  await client.end()
+  await client.end();
 }

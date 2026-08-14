@@ -1,0 +1,11 @@
+{
+  // Without this the Prettier extension uses its own bundled copy, which
+  // cannot resolve prettier-plugin-tailwindcss from the workspace and fails
+  // with "Cannot find package ... imported from .../VS Code/noop.js".
+  "prettier.prettierPath": "./node_modules/prettier",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Monorepo: let the ESLint extension pick each package's own flat config
+  // instead of assuming one at the workspace root.
+  "eslint.workingDirectories": [{ "mode": "auto" }]
+}

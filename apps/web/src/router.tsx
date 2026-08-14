@@ -1,20 +1,20 @@
-import { createRouter as createTanStackRouter } from '@tanstack/react-router'
-import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
+import { createRouter as createTanStackRouter } from "@tanstack/react-router";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
-import { routeTree } from './routeTree.gen'
-import { getContext } from './integrations/tanstack-query/root-provider'
-import { getTrpcContext } from './integrations/trpc/root-provider'
-import { TRPCProvider } from './integrations/trpc/react'
+import { routeTree } from "./routeTree.gen";
+import { getContext } from "./integrations/tanstack-query/root-provider";
+import { getTrpcContext } from "./integrations/trpc/root-provider";
+import { TRPCProvider } from "./integrations/trpc/react";
 
 export function getRouter() {
-  const { queryClient } = getContext()
-  const { trpc, trpcClient } = getTrpcContext(queryClient)
+  const { queryClient } = getContext();
+  const { trpc, trpcClient } = getTrpcContext(queryClient);
 
   const router = createTanStackRouter({
     routeTree,
     context: { queryClient, trpc, trpcClient },
     scrollRestoration: true,
-    defaultPreload: 'intent',
+    defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     // Don't add a QueryClientProvider here — setupRouterSsrQueryIntegration
     // composes one around this Wrap already.
@@ -23,15 +23,15 @@ export function getRouter() {
         {children}
       </TRPCProvider>
     ),
-  })
+  });
 
-  setupRouterSsrQueryIntegration({ router, queryClient })
+  setupRouterSsrQueryIntegration({ router, queryClient });
 
-  return router
+  return router;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface Register {
-    router: ReturnType<typeof getRouter>
+    router: ReturnType<typeof getRouter>;
   }
 }

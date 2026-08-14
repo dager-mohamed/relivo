@@ -21,8 +21,8 @@ Components land in `src/components/`, hooks in `src/hooks/`, helpers in
 ## Consuming
 
 ```ts
-import { Button } from "@repo/ui/components/button"
-import { cn } from "@repo/ui/lib/utils"
+import { Button } from "@repo/ui/components/button";
+import { cn } from "@repo/ui/lib/utils";
 ```
 
 The consuming app must import the stylesheet once, at its CSS entry point:

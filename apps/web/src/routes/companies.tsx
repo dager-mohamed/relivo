@@ -1,28 +1,34 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 
-import { useTRPC } from '#/integrations/trpc/react'
+import { useTRPC } from "#/integrations/trpc/react";
 
-export const Route = createFileRoute('/companies')({
+export const Route = createFileRoute("/companies")({
   // Prefetch on the server; the component then reads from cache.
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(context.trpc.companies.list.queryOptions()),
+    context.queryClient.ensureQueryData(
+      context.trpc.companies.list.queryOptions(),
+    ),
   component: CompaniesPage,
-})
+});
 
 function CompaniesPage() {
-  const trpc = useTRPC()
-  const { data, isPending, error } = useQuery(trpc.companies.list.queryOptions())
+  const trpc = useTRPC();
+  const { data, isPending, error } = useQuery(
+    trpc.companies.list.queryOptions(),
+  );
 
-  if (isPending) return <p className="p-8">Loading companies…</p>
+  if (isPending) return <p className="p-8">Loading companies…</p>;
 
   if (error) {
     return (
       <div className="p-8">
-        <h1 className="text-2xl font-bold text-red-600">Failed to load companies</h1>
+        <h1 className="text-2xl font-bold text-red-600">
+          Failed to load companies
+        </h1>
         <pre className="mt-4 text-sm whitespace-pre-wrap">{error.message}</pre>
       </div>
-    )
+    );
   }
 
   return (
@@ -48,5 +54,5 @@ function CompaniesPage() {
         </ul>
       )}
     </div>
-  )
+  );
 }

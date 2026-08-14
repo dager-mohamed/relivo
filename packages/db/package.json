@@ -20,13 +20,16 @@
     "db:export": "dotenv -e ../../.env -- drizzle-kit export",
     "db:seed": "dotenv -e ../../.env -- tsx src/scripts/seed.ts",
     "db:read": "dotenv -e ../../.env -- tsx src/scripts/read.ts",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "dependencies": {
     "drizzle-orm": "1.0.0-rc.4",
     "postgres": "^3.4.7"
   },
   "devDependencies": {
+    "@repo/eslint-config": "workspace:^",
+    "@repo/typescript-config": "workspace:^",
     "@types/node": "^22.15.3",
     "dotenv-cli": "^10.0.0",
     "drizzle-kit": "1.0.0-rc.4",

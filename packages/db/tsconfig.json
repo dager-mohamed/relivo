@@ -1,26 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "include": ["src/**/*.ts", "drizzle.config.ts"],
-  "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2023"],
-    "module": "ESNext",
-
-    /* Bundler mode. The shared @repo/typescript-config presets are
-       NodeNext/Next.js-era and deliberately not extended. */
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "verbatimModuleSyntax": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "types": ["node"],
-
-    "skipLibCheck": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noUncheckedIndexedAccess": true,
-    "noFallthroughCasesInSwitch": true
-  }
+  "extends": "@repo/typescript-config/node.json",
+  "include": ["src/**/*.ts", "drizzle.config.ts"]
 }

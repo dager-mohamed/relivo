@@ -11,4 +11,4 @@ export {
   JOB_NAMES,
   type NormalizeDomainPayload,
   type SimulateFailurePayload,
-} from "./queues"
+} from "./queues";
