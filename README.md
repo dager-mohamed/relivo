@@ -232,6 +232,20 @@ _Architecture and conventions live in [CLAUDE.md](CLAUDE.md). Product behaviour 
 
 Grouped the same way the work is tracked. Checked items are merged and working.
 
+Items tagged **MVP** make up the first release — the smallest version a founder could actually run their pipeline on. Foundation is already merged; everything else tagged below is what remains.
+
+Four of those items are the entire reason to switch. Two make feedback carry revenue:
+
+- Link feedback to deals and companies
+- Deal value rollup per feedback item and per status group
+
+Two make the pipeline read as a to-do list instead of a filing cabinet:
+
+- Deal card showing value, close date, contact and next step
+- Next Steps hub across all deals, sorted by due date
+
+Everything else tagged MVP exists to make those four usable. Everything untagged waits until they are real.
+
 ### Foundation and project setup
 
 - [x] Turborepo monorepo with pnpm workspaces
@@ -245,62 +259,62 @@ Grouped the same way the work is tracked. Checked items are merged and working.
 
 ### Auth, workspaces and members
 
-- [ ] Email and OAuth authentication
-- [ ] Workspace model and multi-workspace switching
+- [ ] Email and OAuth authentication **MVP**
+- [ ] Workspace model and multi-workspace switching **MVP**
 - [ ] Member invites and roles
-- [ ] Workspace-scoped tRPC middleware and row-level access checks
-- [ ] Seeded demo sandbox workspace for new signups
+- [ ] Workspace-scoped tRPC middleware and row-level access checks **MVP**
+- [ ] Seeded demo sandbox workspace for new signups **MVP**
 
 ### Core data model
 
-- [ ] Company schema and enrichment fields
-- [ ] Person schema and company relations
-- [ ] Deal schema with stages, value, close date and owner
-- [ ] Feedback schema with upvotes and deal links
-- [ ] Next Step schema
-- [ ] Note and Activity event schema for the unified timeline
+- [ ] Company schema and enrichment fields **MVP**
+- [ ] Person schema and company relations **MVP**
+- [ ] Deal schema with stages, value, close date and owner **MVP**
+- [ ] Feedback schema with upvotes and deal links **MVP**
+- [ ] Next Step schema **MVP**
+- [ ] Note and Activity event schema for the unified timeline **MVP**
 - [ ] pgvector embeddings table with HNSW index migration
 - [ ] AI usage metering table for token and cost logging
 
 ### Records — Companies, People, Activity
 
-- [ ] App shell layout with collapsible sidebar sections
-- [ ] Companies list view with filters
-- [ ] Company record page with properties panel
-- [ ] People list view and person record page
-- [ ] Unified activity timeline mixing system events and user notes
-- [ ] Rich text note editor with bullets, mentions and link detection
+- [ ] App shell layout with collapsible sidebar sections **MVP**
+- [ ] Companies list view with filters **MVP**
+- [ ] Company record page with properties panel **MVP**
+- [ ] People list view and person record page **MVP**
+- [ ] Unified activity timeline mixing system events and user notes **MVP**
+- [ ] Rich text note editor with bullets, mentions and link detection **MVP**
 - [ ] Favorites sidebar with pinning and drag reorder for any record type
 
 ### Deals and pipeline
 
-- [ ] Deal CRUD router with sequential deal IDs
-- [ ] Kanban board grouped by stage
-- [ ] Deal card showing value, close date, contact and next step
-- [ ] Drag and drop between stages with optimistic updates
-- [ ] Per-stage value rollups and deal counts in column headers
+- [ ] Deal CRUD router with sequential deal IDs **MVP**
+- [ ] Kanban board grouped by stage **MVP**
+- [ ] Deal card showing value, close date, contact and next step **MVP**
+- [ ] Drag and drop between stages with optimistic updates **MVP**
+- [ ] Per-stage value rollups and deal counts in column headers **MVP**
 - [ ] Deals table view with sorting and column config
-- [ ] Deal detail page with timeline and linked records
+- [ ] Deal detail page with timeline and linked records **MVP**
 - [ ] Configurable pipeline stages in settings
 
 ### Next Steps
 
-- [ ] Next Step CRUD router with due dates and completion
-- [ ] Next Steps hub across all deals, sorted by due date
+- [ ] Next Step CRUD router with due dates and completion **MVP**
+- [ ] Next Steps hub across all deals, sorted by due date **MVP**
 - [ ] Snooze and overdue surfacing
 
 ### Feedback and revenue loop
 
-- [ ] Feedback CRUD router with status workflow
-- [ ] Feedback board grouped by status with Open and Closed tabs
-- [ ] Link feedback to deals and companies
-- [ ] Deal value rollup per feedback item and per status group
+- [ ] Feedback CRUD router with status workflow **MVP**
+- [ ] Feedback board grouped by status with Open and Closed tabs **MVP**
+- [ ] Link feedback to deals and companies **MVP**
+- [ ] Deal value rollup per feedback item and per status group **MVP**
 - [ ] Upvote and request count tracking
-- [ ] Feedback panel on company and deal record pages
+- [ ] Feedback panel on company and deal record pages **MVP**
 
 ### Navigation, search and command palette
 
-- [ ] Command palette with jump-to and create actions
+- [ ] Command palette with jump-to and create actions **MVP**
 - [ ] Global full text search across all record types
 - [ ] Keyboard shortcut system and shortcuts help dialog
 
@@ -346,9 +360,9 @@ Grouped the same way the work is tracked. Checked items are merged and working.
 
 ### Open source and deployment
 
-- [ ] Production Docker Compose for self-hosting
-- [ ] Environment variable reference
-- [ ] Deployment guide
+- [ ] Production Docker Compose for self-hosting **MVP**
+- [ ] Environment variable reference **MVP**
+- [ ] Deployment guide **MVP**
 - [ ] Contributing guide and code of conduct
 - [ ] CSV, HubSpot and Attio import
 
