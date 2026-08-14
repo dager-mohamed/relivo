@@ -29,9 +29,12 @@ icons/
   lockup-h-white.svg
   lockup-s-black.svg  mark over wordmark  191x123
   lockup-s-white.svg
+  icon-ink.svg        backgrounded tile   48x48
+  icon-paper.svg
   favicon.svg         adapts to colour scheme
   favicon.ico         16 / 32 / 48 packed
-  png/                mark-{black,white}-{16..2048}.png
+  png/                mark-{black,white}-{16..2048}.png            transparent
+                      icon-{ink,paper}-{180,192,256,512,1024}.png  opaque
 ```
 
 The `exports` wildcard is `"./*": "./*"`, so new folders work without touching
@@ -54,6 +57,14 @@ mark's height. In a lockup, measure from the outermost ink, not the viewBox.
 slightly tighter, heavier cut (radius 17.5, stroke 9) so the mark holds its
 shape at small sizes. Everything 64px and up uses the standard geometry. Don't
 scale the optical variant up; don't scale the standard one below 64px.
+
+**Backgrounded tiles** — `icon-ink.*` and `icon-paper.*` are opaque squares
+with the mark at 62% of the tile, the standard app-icon glyph proportion. Use
+them anywhere transparency breaks: iOS app icons (Apple rejects alpha),
+`apple-touch-icon`, and social avatars on GitHub / X / LinkedIn, which
+circle-crop. The mark is a circle sitting well inside that crop, so nothing
+clips. Ship the plain square — every platform applies its own corner masking,
+so baking in rounded corners double-rounds it.
 
 **Don't** — recolour outside ink `#1A1613` and white, rotate the mark, close
 the two gaps, change the arc weights independently, or place the ink mark on a

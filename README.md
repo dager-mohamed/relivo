@@ -35,6 +35,8 @@
     </picture>
   </a>
 
+  </br>
+
   <p align="center">
     Open-source CRM for founders who sell their own product. Every feature request carries the revenue riding on it.
     <br />
