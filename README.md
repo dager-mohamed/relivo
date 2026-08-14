@@ -274,7 +274,7 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 - [ ] Next Step schema **MVP**
 - [ ] Note and Activity event schema for the unified timeline **MVP**
 - [ ] pgvector embeddings table with HNSW index migration
-- [ ] AI usage metering table for token and cost logging
+- [ ] AI usage metering table for token and cost logging **MVP**
 
 ### Records — Companies, People, Activity
 
@@ -320,15 +320,17 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### AI layer — foundations
 
-- [ ] `packages/ai` with AI SDK 7 and provider setup
-- [ ] `defineTask` abstraction for all AI features
-- [ ] Deal context builder
-- [ ] On-disk response cache for local development
-- [ ] Eval harness with fixture deals and Vitest assertions
-- [ ] Token and cost logging on every AI call
-- [ ] Rate limiting, retry policy and spend guardrails for AI jobs
+- [ ] `packages/ai` with AI SDK 7 and provider setup **MVP**
+- [ ] `defineTask` abstraction for all AI features **MVP**
+- [ ] Deal context builder **MVP**
+- [ ] On-disk response cache for local development **MVP**
+- [ ] Eval harness with fixture deals and Vitest assertions **MVP**
+- [ ] Token and cost logging on every AI call **MVP**
+- [ ] Rate limiting, retry policy and spend guardrails for AI jobs **MVP**
 
 ### AI layer — retrieval and embeddings
+
+Deliberately outside the MVP. The v0.1 AI feature runs on structured data small enough to pass in a prompt, so none of this is needed until deal coaching arrives.
 
 - [ ] Local embedding model via fastembed
 - [ ] Chunking by semantic unit with content hashing
@@ -339,12 +341,14 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### AI layer — features
 
+- [ ] Paste a meeting transcript to extract feedback and next steps **MVP**
+- [ ] Review panel for extracted items, each showing the quote it came from **MVP**
+- [ ] Feedback matching to suggest links to existing requests **MVP**
 - [ ] Suggested next steps with structured output
 - [ ] Suggested next steps UI with bulk accept and reject
 - [ ] Deal coaching streaming endpoint
 - [ ] Deal coaching chat UI with citations
 - [ ] AI tools to query deals, people and next steps
-- [ ] Feedback matching to suggest links to existing requests
 - [ ] Deal summary and "what changed this week" digest
 - [ ] Momentum view ranking deals by attention needed
 - [ ] Playbooks with relative timing and conditional automations
@@ -354,6 +358,7 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 - [ ] Gmail and Outlook sync onto the deal timeline
 - [ ] BCC-to-Relivo address for email-first deal capture
 - [ ] Calendar integration for meetings on the timeline
+- [ ] Meeting bot joining calls for automatic transcripts, via Vexa
 - [ ] Company enrichment by domain with logo fetching
 - [ ] Bidirectional Plane sync for feedback items
 - [ ] Slack notifications
