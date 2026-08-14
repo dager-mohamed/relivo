@@ -30,12 +30,10 @@
 <div align="center">
   <a href="https://github.com/dager-mohamed/relivo">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="packages/assets/icons/text-white.svg">
-      <img src="packages/assets/icons/text-black.svg" alt="Relivo" width="200">
+      <source media="(prefers-color-scheme: dark)" srcset="packages/assets/icons/lockup-h-white.svg">
+      <img src="packages/assets/icons/lockup-h-black.svg" alt="Relivo" width="260">
     </picture>
   </a>
-
-<h3 align="center">Relivo</h3>
 
   <p align="center">
     Open-source CRM for founders who sell their own product. Every feature request carries the revenue riding on it.

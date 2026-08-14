@@ -20,11 +20,44 @@ no declaration file is needed here.
 ## Layout
 
 ```text
-icons/    text-black.svg, text-white.svg
+icons/
+  text-black.svg      wordmark            191x49
+  text-white.svg
+  mark-black.svg      symbol              48x48
+  mark-white.svg
+  lockup-h-black.svg  mark + wordmark     259x49
+  lockup-h-white.svg
+  lockup-s-black.svg  mark over wordmark  191x123
+  lockup-s-white.svg
+  favicon.svg         adapts to colour scheme
+  favicon.ico         16 / 32 / 48 packed
+  png/                mark-{black,white}-{16..2048}.png
 ```
 
 The `exports` wildcard is `"./*": "./*"`, so new folders work without touching
 `package.json`.
+
+## Brand marks
+
+The symbol is two 150° arcs on a 48x48 grid — centre 24,24, centreline radius
+16, stroke 8. That is a 19.6% stroke-to-diameter ratio, matched to the `o` in
+the wordmark (outer diameter 35.33, stroke 6.912) so mark and name carry the
+same weight when they sit together.
+
+**Clear space** — one stroke width on all four sides, i.e. one sixth of the
+mark's height. In a lockup, measure from the outermost ink, not the viewBox.
+
+**Minimum sizes** — mark 16px; horizontal lockup 120px wide; stacked lockup
+100px wide. Below 100px wide the wordmark's counters start to fill in.
+
+**Optical variant** — `favicon.svg`, `favicon.ico` and the 16/32/48 PNGs use a
+slightly tighter, heavier cut (radius 17.5, stroke 9) so the mark holds its
+shape at small sizes. Everything 64px and up uses the standard geometry. Don't
+scale the optical variant up; don't scale the standard one below 64px.
+
+**Don't** — recolour outside ink `#1A1613` and white, rotate the mark, close
+the two gaps, change the arc weights independently, or place the ink mark on a
+dark background (use the white variant).
 
 ## Notes
 
