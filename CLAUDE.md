@@ -74,6 +74,7 @@ packages/ui/       shadcn components (shared)
 packages/db/       Drizzle schema, migrations, client
 packages/api/      tRPC routers
 packages/jobs/     BullMQ workers
+packages/schema/   Shared zod schemas
 packages/auth/     Better Auth config only          NOT BUILT
 packages/ai/       AI layer                          NOT BUILT
 ```
@@ -86,7 +87,13 @@ packages/ai/       AI layer                          NOT BUILT
 db  <-  auth  <-  api  <-  apps/web
 db  <-  ai    <-  api
 db  <-  jobs  <-  api
+
+schema  <-  db
 ```
+
+- `packages/schema` sits at the bottom: it depends on **zod and nothing else**, and must never import `packages/db` — that would be a cycle, since `db` imports it for refinements.
+- Table-derived zod schemas live in `@repo/db/zod`, not in `packages/schema`. `packages/db` already owns drizzle-orm, and drizzle-zod resolves its `drizzle-orm` peer from the package that depends on it — declaring it anywhere else installs a **second** copy of the ORM (0.45.2 alongside 1.0.0-rc.4), and drizzle-zod then fails to recognise table objects built by the other copy.
+- Anything importing `@repo/db/zod` pulls `drizzle-orm/pg-core` with it. That is fine server-side. Before a client form imports it, measure the bundle — `apps/web` gets its types through tRPC inference and may not need the schema at all.
 
 - `packages/ai` must NOT import from `packages/api`, and must not know tRPC or React exist. Plain data in, typed data out, testable in a standalone script.
 - `apps/web` imports only the `AppRouter` **type** from `packages/api`. The sole exception is [routes/api/trpc/$.ts](apps/web/src/routes/api/trpc/%24.ts), which mounts the handler and is server-only.
@@ -139,6 +146,25 @@ Non-obvious, each cost real debugging time. Don't violate without discussion.
 - Vector indexes live in hand-written migrations.
 - Postgres image must be `pgvector/pgvector`, not plain `postgres`.
 - Drizzle is a **v1 release candidate** and its API differs from the 0.3x material that dominates search results. Two that break copied snippets: `drizzle(client)` positional is not a valid overload (use `drizzle({ client })`), and there is no `{ schema }` option — the pg config type is `Omit<DrizzleConfig, 'schema'>`.
+
+### Row-level security
+
+Postgres RLS is the tenant-isolation model. **Not switched on yet** — there is no auth and one tenant — but the schema is designed for it, and the first rule below is binding today.
+
+- **Every tenant-scoped table carries `workspaceId` from the moment it is created.** Retrofitting the column across eight tables means eight migrations plus a backfill plus every query touched; adding it as each table lands is free. Do not defer this one.
+- **Enable RLS with `FORCE`, or have the app connect as a non-owner role.** Policies do not apply to the table owner, and with a single `DATABASE_URL` the app connects as the role that ran the migrations — so every policy silently does nothing while the setup looks correct. This is the usual way RLS ships switched off.
+- **Set session context with `set_config('app.workspace_id', $1, true)` inside a transaction** — the trailing `true` scopes it to that transaction. A bare `SET` persists on a pooled postgres.js connection, so the next request to borrow it inherits another tenant's context. That is a cross-tenant leak caused by the isolation feature itself.
+- RLS enabled with no policy is **default deny**: tables read as empty rather than erroring.
+- Workers have no session. Either they connect as a `BYPASSRLS` role or `workspaceId` travels in the job payload — compatible with the "payloads carry IDs, never rows" rule.
+- Procedures still filter explicitly (`where workspaceId = ctx.session.workspaceId`). RLS is the backstop for the day someone forgets, not permission to omit it.
+- Policies are DDL — `drizzle-kit generate` + `migrate` like everything else. Roles Drizzle does not manage need `entities.roles` in `drizzle.config.ts`, or generate tries to drop them.
+
+### Zod schemas
+
+- **A new table is not done until its zod schemas exist.** Adding a table means, in the same change: the Drizzle table in `schema.ts`, the migration, a `src/zod/<entity>.ts`, and its line in `src/zod/index.ts`. A table without schemas leaves every caller free to invent its own shape, which is the drift this setup exists to prevent.
+- **Never hand-write a shape that a table already describes.** Derive it — `createInsertSchema` / `createSelectSchema`, update derived from insert. tRPC procedures take these via `.input()`; a router defining its own parallel `z.object` for a table is a bug.
+- Values that are not one table's business — money, shared enums, AI task outputs — go in `@repo/schema` and get applied as refinements. It depends on zod only; see the dependency rules above.
+- See `packages/db` below for the two drizzle-zod refinement traps before writing one.
 
 ### BullMQ
 
@@ -193,7 +219,9 @@ Non-obvious, each cost real debugging time. Don't violate without discussion.
 
 ## packages/db
 
-`schema.ts` (tables + `Company`/`NewCompany` types), `client.ts`, `orm.ts` (re-exports drizzle helpers so nothing else depends on `drizzle-orm`), `index.ts`, plus `scripts/seed.ts` and `scripts/read.ts`.
+`schema.ts` (tables + `Company`/`NewCompany` types), `zod/` (drizzle-zod schemas derived from those tables), `client.ts`, `orm.ts` (re-exports drizzle helpers so nothing else depends on `drizzle-orm`), `index.ts`, plus `scripts/seed.ts` and `scripts/read.ts`.
+
+`zod/` is **one file per entity** (`company.ts`, then `deal.ts`, `nextStep.ts`… as tables land) with `zod/index.ts` re-exporting them. Exported as `@repo/db/zod` and deliberately kept off the package's own `index.ts`, same reasoning as `orm.ts`. Two drizzle-zod traps: passing a bare schema as a refinement **replaces** the generated one (losing `.optional()` on update schemas), while the callback form `(s) => s.max(20)` extends it. Derive update schemas from the insert schema instead of calling `createUpdateSchema` separately, so refinements are declared once.
 
 Migrations are committed under `drizzle/`. Postgres runs on **host port 5434** — 5432 and 5433 were taken.
 
@@ -254,9 +282,11 @@ When in doubt, propose the smaller version. Prefer a working vertical slice over
 
 ## Current state
 
-Built and typechecking: `apps/web`, `@repo/ui` (~61 components), `@repo/db`, `@repo/api`, `@repo/jobs`.
+Built and typechecking: `apps/web`, `@repo/ui` (~61 components), `@repo/db`, `@repo/api`, `@repo/jobs`, `@repo/schema`.
 
-The schema has **one table** — `companies` (`id`, `name`, `domain`, `createdAt`). Everything else in PRODUCT.md is unbuilt. Don't read the spec and assume the schema is broken.
+The database has **one table** — `companies` (`id`, `name`, `domain`, `createdAt`). Everything else in PRODUCT.md is unbuilt. Don't read the spec and assume it is broken.
+
+`@repo/schema` holds only what cannot be derived from a table: `primitives.ts` (`money`, `domain`). Shared enums and AI output schemas go here as they arrive. Entity CRUD schemas do **not** — those are generated by drizzle-zod under `packages/db/src/zod/`, one file per entity, currently just `company.ts` (`companyInsert` / `companyUpdate` / `companySelect`).
 
 Not yet built: `packages/auth`, `packages/ai`, any test setup, email sync, and every screen in PRODUCT.md.
 

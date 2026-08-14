@@ -171,12 +171,21 @@ importers:
 
   packages/db:
     dependencies:
+      '@repo/schema':
+        specifier: workspace:*
+        version: link:../schema
       drizzle-orm:
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(@types/pg@8.21.0)(pg@8.23.0)(postgres@3.4.9)(zod@4.4.3)
+      drizzle-zod:
+        specifier: 1.0.0-beta.14-a36c63d
+        version: 1.0.0-beta.14-a36c63d(drizzle-orm@1.0.0-rc.4(@types/pg@8.21.0)(pg@8.23.0)(postgres@3.4.9)(zod@4.4.3))(zod@4.4.3)
       postgres:
         specifier: ^3.4.7
         version: 3.4.9
+      zod:
+        specifier: ^4.3.6
+        version: 4.4.3
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:^
@@ -260,6 +269,25 @@ importers:
       tsx:
         specifier: ^4.23.12
         version: 4.23.12
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+
+  packages/schema:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.4.3
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:^
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:^
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
@@ -2620,6 +2648,12 @@ packages:
         optional: true
       zod:
         optional: true
+
+  drizzle-zod@1.0.0-beta.14-a36c63d:
+    resolution: {integrity: sha512-GW5alHNCDJ4upenko60KU+MLbyP4buc8bIbwxzwu9ML0dJikXg0jodQcXiv1tUP1aeKzUH8n8nkoG8uJVO7w7w==}
+    peerDependencies:
+      drizzle-orm: '>=1.0.0-beta.2'
+      zod: ^3.25.0 || ^4.0.0
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -6855,6 +6889,11 @@ snapshots:
       '@types/pg': 8.21.0
       pg: 8.23.0
       postgres: 3.4.9
+      zod: 4.4.3
+
+  drizzle-zod@1.0.0-beta.14-a36c63d(drizzle-orm@1.0.0-rc.4(@types/pg@8.21.0)(pg@8.23.0)(postgres@3.4.9)(zod@4.4.3))(zod@4.4.3):
+    dependencies:
+      drizzle-orm: 1.0.0-rc.4(@types/pg@8.21.0)(pg@8.23.0)(postgres@3.4.9)(zod@4.4.3)
       zod: 4.4.3
 
   dunder-proto@1.0.1:
