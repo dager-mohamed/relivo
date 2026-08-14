@@ -101,9 +101,15 @@ When you ship it, Relivo hands you back the list of deals that were blocked, so 
 
 **It gets out of your way.** `⌘K` from anywhere. Type a domain and the company fills itself in. No required fields, no setup wizard, no forty-column table.
 
-### What it deliberately isn't
+### Why not HubSpot or Zoho
 
-No lead scoring, no marketing automation, no email sequencer, no forecasting dashboards, no quota tracking. The pipeline starts at _qualified_ and ends at _closed_. Everything outside that competes with tools that already do it better, and every one of them is a settings page you'd have to learn.
+They're built for sales _teams_ — forecasting, lead scoring, quota tracking, reporting, and a settings page for each. All of it assumes someone whose job is keeping the CRM clean. You don't have that person; you're the one on the calls, and admin is the first thing to go. Two months later the CRM is a graveyard of half-filled fields and the deals are back in your head.
+
+Relivo does less on purpose. No lead scoring, no marketing automation, no email sequencer, no forecasting dashboards, no quota tracking. The pipeline starts at _qualified_ and ends at _closed_. Everything outside that competes with tools that already do it better, and every one of them is a settings page you'd have to learn.
+
+The trade cuts both ways, so plainly: **if you hire a sales team, go use one of them.** Relivo isn't trying to be your CRM at forty people. Import from HubSpot and Attio is on the roadmap, and the data underneath is a Postgres you own — moving in or out is a database, not a negotiation.
+
+What none of them do, at any price or team size, is tell you which feature request has $288K of pipeline waiting on it. A CRM doesn't know your roadmap; a feedback tool doesn't know your pipeline. You're the one holding both.
 
 Self-hosted, AGPL-3.0, your data in your own Postgres.
 
