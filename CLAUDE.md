@@ -39,7 +39,8 @@ Work is tracked in Plane (project `RELIV`) — a Plane MCP server is available. 
 2. Propose a plan. Wait for me.
 3. Implement in reviewable steps.
 4. Verify against the task's "Done when" list before declaring it finished.
-5. One task per session where possible. Suggest `/clear` between tasks.
+5. **Tick the matching item in the README Roadmap** — `- [ ]` → `- [x]` — in the same change as the feature. That section states "checked items are merged and working," so only tick what is actually both. If nothing there matches what was built, say so rather than inventing a line.
+6. One task per session where possible. Suggest `/clear` between tasks.
 
 Some task descriptions begin with "defer this" and explain the trigger for doing it. Respect that; it's deliberate.
 
@@ -290,6 +291,4 @@ The database has **one table** — `companies` (`id`, `name`, `domain`, `created
 
 Not yet built: `packages/auth`, `packages/ai`, any test setup, email sync, and every screen in PRODUCT.md.
 
-Root `README.md` still describes a two-Next.js-app monorepo from the `create-turbo` starter. Untrue; ignore it.
-
-The repo has only the initial `create-turbo` commit — essentially the whole tree is uncommitted.
+Root `README.md` is current and maintained — it carries the public Roadmap that step 5 of the Workflow keeps in sync. Treat it as accurate.
