@@ -234,8 +234,8 @@ Grouped the same way the work is tracked. Checked items are merged and working.
 - [x] tRPC server and client with TanStack Query
 - [x] Drizzle ORM and Postgres with pgvector
 - [x] Redis and BullMQ worker process
-- [ ] Shared zod schema package
-- [ ] ESLint, Prettier, TypeScript strict mode and CI
+- [x] Shared zod schema package
+- [x] ESLint, Prettier, TypeScript strict mode and CI
 
 ### Auth, workspaces and members
 
