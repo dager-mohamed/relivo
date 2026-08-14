@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./schema": "./src/schema.ts",
+    "./zod": "./src/zod/index.ts",
     "./client": "./src/client.ts",
     "./orm": "./src/orm.ts"
   },
@@ -24,8 +25,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@repo/schema": "workspace:*",
     "drizzle-orm": "1.0.0-rc.4",
-    "postgres": "^3.4.7"
+    "drizzle-zod": "1.0.0-beta.14-a36c63d",
+    "postgres": "^3.4.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:^",
