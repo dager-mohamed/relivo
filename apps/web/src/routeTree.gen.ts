@@ -9,19 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as CompaniesRouteImport } from './routes/companies'
+import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppCompaniesIndexRouteImport } from './routes/_app/companies/index'
+import { Route as AppDealsIndexRouteImport } from './routes/_app/deals/index'
+import { Route as AppFeedbackIndexRouteImport } from './routes/_app/feedback/index'
+import { Route as AppNextStepsIndexRouteImport } from './routes/_app/next-steps/index'
+import { Route as AppPeopleIndexRouteImport } from './routes/_app/people/index'
+import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AppRouteRoute = AppRouteRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CompaniesRoute = CompaniesRouteImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => rootRouteImport,
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppCompaniesIndexRoute = AppCompaniesIndexRouteImport.update({
+  id: '/companies/',
+  path: '/companies/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppDealsIndexRoute = AppDealsIndexRouteImport.update({
+  id: '/deals/',
+  path: '/deals/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppFeedbackIndexRoute = AppFeedbackIndexRouteImport.update({
+  id: '/feedback/',
+  path: '/feedback/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppNextStepsIndexRoute = AppNextStepsIndexRouteImport.update({
+  id: '/next-steps/',
+  path: '/next-steps/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppPeopleIndexRoute = AppPeopleIndexRouteImport.update({
+  id: '/people/',
+  path: '/people/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   id: '/api/trpc/$',
@@ -30,50 +65,133 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
+  '/': typeof AppIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/companies/': typeof AppCompaniesIndexRoute
+  '/deals/': typeof AppDealsIndexRoute
+  '/feedback/': typeof AppFeedbackIndexRoute
+  '/next-steps/': typeof AppNextStepsIndexRoute
+  '/people/': typeof AppPeopleIndexRoute
+  '/settings/': typeof AppSettingsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
+  '/': typeof AppIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/companies': typeof AppCompaniesIndexRoute
+  '/deals': typeof AppDealsIndexRoute
+  '/feedback': typeof AppFeedbackIndexRoute
+  '/next-steps': typeof AppNextStepsIndexRoute
+  '/people': typeof AppPeopleIndexRoute
+  '/settings': typeof AppSettingsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
+  '/_app': typeof AppRouteRouteWithChildren
+  '/_app/': typeof AppIndexRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/_app/companies/': typeof AppCompaniesIndexRoute
+  '/_app/deals/': typeof AppDealsIndexRoute
+  '/_app/feedback/': typeof AppFeedbackIndexRoute
+  '/_app/next-steps/': typeof AppNextStepsIndexRoute
+  '/_app/people/': typeof AppPeopleIndexRoute
+  '/_app/settings/': typeof AppSettingsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/companies' | '/api/trpc/$'
+  fullPaths:
+    | '/'
+    | '/api/trpc/$'
+    | '/companies/'
+    | '/deals/'
+    | '/feedback/'
+    | '/next-steps/'
+    | '/people/'
+    | '/settings/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/companies' | '/api/trpc/$'
-  id: '__root__' | '/' | '/companies' | '/api/trpc/$'
+  to:
+    | '/'
+    | '/api/trpc/$'
+    | '/companies'
+    | '/deals'
+    | '/feedback'
+    | '/next-steps'
+    | '/people'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/'
+    | '/api/trpc/$'
+    | '/_app/companies/'
+    | '/_app/deals/'
+    | '/_app/feedback/'
+    | '/_app/next-steps/'
+    | '/_app/people/'
+    | '/_app/settings/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  CompaniesRoute: typeof CompaniesRoute
+  AppRouteRoute: typeof AppRouteRouteWithChildren
   ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/companies': {
-      id: '/companies'
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/companies/': {
+      id: '/_app/companies/'
       path: '/companies'
-      fullPath: '/companies'
-      preLoaderRoute: typeof CompaniesRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/companies/'
+      preLoaderRoute: typeof AppCompaniesIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/deals/': {
+      id: '/_app/deals/'
+      path: '/deals'
+      fullPath: '/deals/'
+      preLoaderRoute: typeof AppDealsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/feedback/': {
+      id: '/_app/feedback/'
+      path: '/feedback'
+      fullPath: '/feedback/'
+      preLoaderRoute: typeof AppFeedbackIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/next-steps/': {
+      id: '/_app/next-steps/'
+      path: '/next-steps'
+      fullPath: '/next-steps/'
+      preLoaderRoute: typeof AppNextStepsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/people/': {
+      id: '/_app/people/'
+      path: '/people'
+      fullPath: '/people/'
+      preLoaderRoute: typeof AppPeopleIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/settings/': {
+      id: '/_app/settings/'
+      path: '/settings'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/api/trpc/$': {
       id: '/api/trpc/$'
@@ -85,9 +203,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppRouteRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+  AppCompaniesIndexRoute: typeof AppCompaniesIndexRoute
+  AppDealsIndexRoute: typeof AppDealsIndexRoute
+  AppFeedbackIndexRoute: typeof AppFeedbackIndexRoute
+  AppNextStepsIndexRoute: typeof AppNextStepsIndexRoute
+  AppPeopleIndexRoute: typeof AppPeopleIndexRoute
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+}
+
+const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+  AppCompaniesIndexRoute: AppCompaniesIndexRoute,
+  AppDealsIndexRoute: AppDealsIndexRoute,
+  AppFeedbackIndexRoute: AppFeedbackIndexRoute,
+  AppNextStepsIndexRoute: AppNextStepsIndexRoute,
+  AppPeopleIndexRoute: AppPeopleIndexRoute,
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+}
+
+const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
+  AppRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  CompaniesRoute: CompaniesRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
   ApiTrpcSplatRoute: ApiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport

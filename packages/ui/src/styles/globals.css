@@ -74,33 +74,37 @@
   --popover-foreground: oklch(0.204 0.009 60);
   --primary: oklch(0.204 0.009 60);
   --primary-foreground: oklch(0.977 0.007 79);
-  --secondary: oklch(0.945 0.008 79);
+  --secondary: oklch(0.93 0.008 75);
   --secondary-foreground: oklch(0.204 0.009 60);
-  --muted: oklch(0.945 0.008 79);
-  --muted-foreground: oklch(0.55 0.006 258);
-  --accent: oklch(0.945 0.008 79);
+  --muted: oklch(0.93 0.008 75);
+  /* Warm, like everything else here. The cool grey this replaced came from the
+     dark palette's #989A9D and had no business on paper. */
+  --muted-foreground: oklch(0.52 0.008 70);
+  --accent: oklch(0.93 0.008 75);
   --accent-foreground: oklch(0.204 0.009 60);
   --destructive: oklch(0.577 0.245 27.325);
   --info: oklch(0.52 0.15 245);
   --warning: oklch(0.55 0.12 75);
   --success: oklch(0.52 0.13 155);
-  --border: oklch(0.895 0.008 79);
-  --input: oklch(0.895 0.008 79);
-  --ring: oklch(0.55 0.006 258);
+  --border: oklch(0.885 0.008 75);
+  --input: oklch(0.885 0.008 75);
+  --ring: oklch(0.52 0.008 70);
   --chart-1: oklch(0.52 0.15 245);
   --chart-2: oklch(0.55 0.12 75);
   --chart-3: oklch(0.52 0.13 155);
   --chart-4: oklch(0.5 0.15 300);
-  --chart-5: oklch(0.55 0.008 60);
+  --chart-5: oklch(0.55 0.008 70);
   --radius: 0.75rem;
-  --sidebar: oklch(0.977 0.007 79);
+  /* One step under paper. Dark has no room below its ground, but light does,
+     so the inset panel reads as paper sitting on a surface. */
+  --sidebar: oklch(0.955 0.008 75);
   --sidebar-foreground: oklch(0.204 0.009 60);
   --sidebar-primary: oklch(0.204 0.009 60);
   --sidebar-primary-foreground: oklch(0.977 0.007 79);
-  --sidebar-accent: oklch(0.93 0.008 79);
+  --sidebar-accent: oklch(0.915 0.008 75);
   --sidebar-accent-foreground: oklch(0.204 0.009 60);
-  --sidebar-border: oklch(0.895 0.008 79);
-  --sidebar-ring: oklch(0.55 0.006 258);
+  --sidebar-border: oklch(0.885 0.008 75);
+  --sidebar-ring: oklch(0.52 0.008 70);
 }
 
 .dark {
@@ -130,9 +134,10 @@
   --chart-3: oklch(0.75 0.15 155);
   --chart-4: oklch(0.72 0.13 300);
   --chart-5: oklch(0.7 0.01 60);
-  /* Same ground as the canvas — a near-miss darker shade read as a smudge,
-     and made the sidebar the heaviest thing on screen. The border separates. */
-  --sidebar: oklch(0.204 0.009 60);
+  /* The ground the inset panel floats on, not a peer of the canvas. A full
+     step below --background (0.165 → 0.204 → card 0.239 → hover 0.279), which
+     is why it reads as layering rather than the smudge a near-miss produced. */
+  --sidebar: oklch(0.165 0.009 60);
   --sidebar-foreground: oklch(1 0 0);
   --sidebar-primary: oklch(0.985 0 0);
   --sidebar-primary-foreground: oklch(0.204 0.009 60);
