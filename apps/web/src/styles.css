@@ -1,17 +1,9 @@
-
-@import "tailwindcss";
-
-* {
-  box-sizing: border-box;
-}
+/* Pulls in Tailwind, the shadcn layer and the design tokens. Do not also
+   `@import "tailwindcss"` here — the base layer would be emitted twice. */
+@import "@repo/ui/globals.css";
 
 html,
 body,
 #app {
   min-height: 100%;
 }
-
-body {
-  margin: 0;
-}
-

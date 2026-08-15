@@ -1,7 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+/* opsz build, not the default wght-only one: it carries Inter's optical-size
+   axis, which `font-optical-sizing: auto` below drives to reach Inter Display
+   at large sizes. Same family name either way. */
+@import "@fontsource-variable/inter/opsz.css";
 
 /* Scans this package's own sources — without it a consuming app emits no
    classes for these components. Paths are relative to this file. */
@@ -10,125 +13,151 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-sans);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-info: var(--info);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  /* Pinned, not derived: the three sizes we design to are 8/12/16px, and Nova
+     spends them as md (menu items), lg (buttons, inputs, popovers) and
+     xl (cards, dialogs, command palette). */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+  --radius-4xl: 2.5rem;
 }
 
+/* Ink (#1A1613) and paper (#FAF7F2) are the brand marks' own two colours — see
+   packages/assets/README.md. Chrome is built from those alone; the only hues in
+   the system are --info / --warning / --success / --destructive, and they are
+   reserved for record state (deal stage, feedback status, step urgency). */
 :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+  --background: oklch(0.977 0.007 79);
+  --foreground: oklch(0.204 0.009 60);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.204 0.009 60);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.204 0.009 60);
+  --primary: oklch(0.204 0.009 60);
+  --primary-foreground: oklch(0.977 0.007 79);
+  --secondary: oklch(0.945 0.008 79);
+  --secondary-foreground: oklch(0.204 0.009 60);
+  --muted: oklch(0.945 0.008 79);
+  --muted-foreground: oklch(0.55 0.006 258);
+  --accent: oklch(0.945 0.008 79);
+  --accent-foreground: oklch(0.204 0.009 60);
+  --destructive: oklch(0.577 0.245 27.325);
+  --info: oklch(0.52 0.15 245);
+  --warning: oklch(0.55 0.12 75);
+  --success: oklch(0.52 0.13 155);
+  --border: oklch(0.895 0.008 79);
+  --input: oklch(0.895 0.008 79);
+  --ring: oklch(0.55 0.006 258);
+  --chart-1: oklch(0.52 0.15 245);
+  --chart-2: oklch(0.55 0.12 75);
+  --chart-3: oklch(0.52 0.13 155);
+  --chart-4: oklch(0.5 0.15 300);
+  --chart-5: oklch(0.55 0.008 60);
+  --radius: 0.75rem;
+  --sidebar: oklch(0.977 0.007 79);
+  --sidebar-foreground: oklch(0.204 0.009 60);
+  --sidebar-primary: oklch(0.204 0.009 60);
+  --sidebar-primary-foreground: oklch(0.977 0.007 79);
+  --sidebar-accent: oklch(0.93 0.008 79);
+  --sidebar-accent-foreground: oklch(0.204 0.009 60);
+  --sidebar-border: oklch(0.895 0.008 79);
+  --sidebar-ring: oklch(0.55 0.006 258);
 }
 
 .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
+  --background: oklch(0.204 0.009 60);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.239 0.009 60);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.239 0.009 60);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.204 0.009 60);
+  --secondary: oklch(0.279 0.009 60);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.279 0.009 60);
+  --muted-foreground: oklch(0.686 0.005 258);
+  --accent: oklch(0.279 0.009 60);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --info: oklch(0.74 0.12 245);
+  --warning: oklch(0.78 0.13 75);
+  --success: oklch(0.75 0.15 155);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.686 0.005 258);
+  --chart-1: oklch(0.74 0.12 245);
+  --chart-2: oklch(0.78 0.13 75);
+  --chart-3: oklch(0.75 0.15 155);
+  --chart-4: oklch(0.72 0.13 300);
+  --chart-5: oklch(0.7 0.01 60);
+  /* Same ground as the canvas — a near-miss darker shade read as a smudge,
+     and made the sidebar the heaviest thing on screen. The border separates. */
+  --sidebar: oklch(0.204 0.009 60);
+  --sidebar-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.204 0.009 60);
+  --sidebar-accent: oklch(0.279 0.009 60);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.686 0.005 258);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+  }
   html {
     @apply font-sans;
-    }
+    letter-spacing: -0.15px;
+    font-optical-sizing: auto;
+  }
+  /* -0.15px is tuned for body copy; headings need proportionally more. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
 }

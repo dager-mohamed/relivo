@@ -4,6 +4,9 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
+import faviconIco from "@repo/assets/icons/favicon.ico";
+import faviconSvg from "@repo/assets/icons/favicon.svg";
+import appleTouchIcon from "@repo/assets/icons/png/icon-ink-180.png";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { TrpcContext } from "../integrations/trpc/root-provider";
@@ -28,7 +31,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Relivo",
       },
     ],
     links: [
@@ -36,6 +39,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: "stylesheet",
         href: appCss,
       },
+      // .ico first as the fallback; browsers that understand SVG take it and
+      // get the mark's own light/dark switch for free.
+      { rel: "icon", href: faviconIco, sizes: "48x48" },
+      { rel: "icon", type: "image/svg+xml", href: faviconSvg },
+      // Opaque tile — Apple rejects alpha on touch icons.
+      { rel: "apple-touch-icon", href: appleTouchIcon },
     ],
   }),
   shellComponent: RootDocument,
@@ -43,7 +52,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    // Dark is the designed default; removing this class gives the light theme.
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
