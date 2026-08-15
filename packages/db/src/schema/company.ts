@@ -50,9 +50,11 @@ export const companies = pgTable(
     funding: bigint("funding", { mode: "number" }),
     phone: text("phone"),
     socials: jsonb("socials").$type<Socials>(),
+    // $type sets the element type after .array(), so the array-of goes here,
+    // not in the parameter — EnrichableCompanyField[] gives a text[][].
     manualFields: text("manual_fields")
       .array()
-      .$type<EnrichableCompanyField[]>()
+      .$type<EnrichableCompanyField>()
       .notNull()
       .default([]),
     ...timestamps,

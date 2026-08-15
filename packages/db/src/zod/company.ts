@@ -1,16 +1,13 @@
-import { domain, money, socials } from "@repo/schema";
+import { companyNameFromDomain, domain, money, socials } from "@repo/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { companies } from "../schema";
 
-// "Acme" from "acme.com" — the placeholder until enrichment returns, which
-// is why name is NOT NULL rather than nullable with a `?? domain` at every
-// render site.
-export function companyNameFromDomain(value: string): string {
-  const label = value.split(".")[0] ?? value;
-  return label.charAt(0).toUpperCase() + label.slice(1);
-}
+// Lives in @repo/schema so a browser form can derive the same name without
+// pulling drizzle-orm/pg-core in with it. Re-exported here because this is
+// where callers expect a company's schema helpers to be.
+export { companyNameFromDomain };
 
 // manualFields is omitted — written by whatever applies an edit, not sent
 // with it, so a client can't tell enrichment to skip a field.

@@ -1,6 +1,9 @@
-import type { Company, Deal, Feedback, Person } from "@repo/db";
+import type { Company, Deal, Feedback, Person, User } from "@repo/db";
 import type { DealStageType } from "@repo/schema";
 
+import { draftName, type CompanyDraft } from "#/lib/companies/new-company";
+
+import { currentUser } from "./user";
 import { workspace } from "./workspace";
 
 /**
@@ -12,10 +15,14 @@ import { workspace } from "./workspace";
  */
 export type CompanyListRow = Company & {
   people: Pick<Person, "id" | "name" | "avatarUrl">[];
-  deals: (Pick<Deal, "id" | "number" | "value"> & {
+  deals: (Pick<Deal, "id" | "number" | "value" | "closeDate"> & {
     stageType: DealStageType;
+    owner: Pick<User, "id" | "name" | "image"> | null;
   })[];
-  feedback: Pick<Feedback, "id" | "title" | "status">[];
+  feedback: (Pick<Feedback, "id" | "title" | "status"> & {
+    /** Summed value of every deal blocked on it — derived, never stored. */
+    dealValue: number;
+  })[];
   /** Derived server-side; never stored. */
   openDealCount: number;
   totalDealValue: number;
@@ -32,18 +39,47 @@ type Seed = {
   deals: { number: number; value: number | null; stageType: DealStageType }[];
   people: string[];
   feedback: { title: string; status: Feedback["status"] }[];
+  socials?: Record<string, string>;
   createdAt: string;
+};
+
+/**
+ * Workspace-wide, not per company: a request blocks whatever deals are linked
+ * to it, wherever they sit. Keyed by title so the same request shows the same
+ * figure on every company that raised it.
+ */
+const blockedRevenue: Record<string, number> = {
+  "Audit log export to CSV": 41_200_000,
+  "SAML single sign-on": 35_600_000,
+  "Checksum validation": 23_850_000,
+  "Scheduled snapshots": 19_400_000,
+  "Configurable retention policy": 12_750_000,
+  "Bulk edit from the table": 8_600_000,
+  "Weekly digest email": 4_150_000,
+  "CLI for job status": 2_900_000,
+};
+
+const owner: CompanyListRow["deals"][number]["owner"] = {
+  id: currentUser.id,
+  name: currentUser.name,
+  image: currentUser.image,
 };
 
 function build(seed: Seed): CompanyListRow {
   seq += 1;
   const id = `3f1c0a2e-0100-4000-8000-${String(seq).padStart(12, "0")}`;
-
   const deals = seed.deals.map((deal, i) => ({
     id: `3f1c0a2e-0400-4000-8000-${String(seq * 10 + i).padStart(12, "0")}`,
     number: deal.number,
     value: deal.value,
+    // Date-only string, matching the column — see schema/deal.ts. An open deal
+    // closes ahead of today; a won or lost one already did.
+    closeDate: addDays(
+      now,
+      deal.stageType === "open" ? 20 + i * 30 : -14 - i * 9,
+    ),
     stageType: deal.stageType,
+    owner,
   }));
 
   return {
@@ -58,7 +94,7 @@ function build(seed: Seed): CompanyListRow {
     revenue: null,
     funding: null,
     phone: null,
-    socials: null,
+    socials: seed.socials ?? null,
     manualFields: [],
     createdAt: new Date(seed.createdAt),
     updatedAt: now,
@@ -68,15 +104,79 @@ function build(seed: Seed): CompanyListRow {
       avatarUrl: null,
     })),
     deals,
-    feedback: seed.feedback.map((item, i) => ({
-      id: `3f1c0a2e-0500-4000-8000-${String(seq * 10 + i).padStart(12, "0")}`,
-      title: item.title,
-      status: item.status,
-    })),
+    feedback: seed.feedback
+      .map((item, i) => ({
+        id: `3f1c0a2e-0500-4000-8000-${String(seq * 10 + i).padStart(12, "0")}`,
+        title: item.title,
+        status: item.status,
+        dealValue: blockedRevenue[item.title] ?? 0,
+      }))
+      // The section is a ranking: most revenue blocked first.
+      .sort((a, b) => b.dealValue - a.dealValue),
     openDealCount: deals.filter((deal) => deal.stageType === "open").length,
     // Minor units, summed across every deal — see text-maps/money.ts.
     totalDealValue: deals.reduce((sum, deal) => sum + (deal.value ?? 0), 0),
   };
+}
+
+// The fields the create dialog collects that enrichment is also allowed to
+// write — see enrichableCompanyFields in packages/db.
+const manualCandidates = [
+  "name",
+  "location",
+  "description",
+  "employees",
+  "revenue",
+  "funding",
+  "phone",
+] as const satisfies readonly (keyof CompanyDraft)[];
+
+/**
+ * What `companies.create` will hand back. A company created by hand has no
+ * deals, no people and no feedback — the same shape as `Be Incorporated`
+ * below, which is why that fixture is there.
+ *
+ * It files the row as well as returning it: the list and record screens each
+ * read this array into their own state, so a company created on one has to
+ * exist for the other. A mutation plus a query invalidation replaces exactly
+ * this.
+ */
+export function addCompanyRow(draft: CompanyDraft): CompanyListRow {
+  seq += 1;
+
+  const row: CompanyListRow = {
+    id: `3f1c0a2e-0100-4000-8000-${String(seq).padStart(12, "0")}`,
+    workspaceId: workspace.id,
+    domain: draft.domain,
+    name: draftName(draft),
+    logoUrl: null,
+    location: draft.location,
+    description: draft.description,
+    employees: draft.employees,
+    revenue: draft.revenue,
+    funding: draft.funding,
+    phone: draft.phone,
+    socials: null,
+    // Typed by hand, so a later enrich must not overwrite them. A derived
+    // name is not manual, which is why draft.name is null until you edit it.
+    manualFields: manualCandidates.filter((field) => draft[field] !== null),
+    createdAt: now,
+    updatedAt: now,
+    people: [],
+    deals: [],
+    feedback: [],
+    openDealCount: 0,
+    totalDealValue: 0,
+  };
+
+  companyRows.unshift(row);
+  return row;
+}
+
+function addDays(from: Date, days: number): string {
+  const date = new Date(from);
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 export const companyRows: CompanyListRow[] = [
@@ -118,6 +218,11 @@ export const companyRows: CompanyListRow[] = [
     deals: [{ number: 21, value: 17_500_000, stageType: "open" }],
     people: ["Akio Morita"],
     feedback: [{ title: "Checksum validation", status: "planned" }],
+    socials: {
+      LinkedIn: "https://linkedin.com/company/sony",
+      X: "https://x.com/sony",
+      YouTube: "https://youtube.com/@sony",
+    },
     createdAt: "2026-06-24T09:00:00Z",
   }),
   build({
@@ -148,6 +253,12 @@ export const companyRows: CompanyListRow[] = [
     deals: [{ number: 18, value: 12_500_000, stageType: "open" }],
     people: ["Diane Greene", "Mendel Rosenblum"],
     feedback: [{ title: "Audit log export to CSV", status: "in_progress" }],
+    socials: {
+      LinkedIn: "https://linkedin.com/company/vmware",
+      GitHub: "https://github.com/vmware",
+      X: "https://x.com/vmware",
+      Website: "https://blogs.vmware.com",
+    },
     createdAt: "2026-06-21T11:00:00Z",
   }),
   build({
@@ -172,6 +283,10 @@ export const companyRows: CompanyListRow[] = [
       { title: "Bulk edit from the table", status: "backlog" },
       { title: "Weekly digest email", status: "backlog" },
     ],
+    socials: {
+      LinkedIn: "https://linkedin.com/company/general-magic",
+      GitHub: "https://github.com/generalmagic",
+    },
     createdAt: "2026-06-21T09:00:00Z",
   }),
   build({

@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
+import { cn } from "@repo/ui/lib/utils";
 
 /**
  * The frame every page sits in, and the one header bar every list screen
@@ -22,6 +23,7 @@ export function PageShell({
   icon: Icon,
   parent,
   actions,
+  bleed = false,
   children,
 }: {
   title: string;
@@ -29,6 +31,8 @@ export function PageShell({
   /** Record pages sit under their list — "Companies / Atari". */
   parent?: { label: string; to: LinkProps["to"] };
   actions?: React.ReactNode;
+  /** Drop the content gutter, for pages that own their own edges. */
+  bleed?: boolean;
   children?: React.ReactNode;
 }) {
   return (
@@ -70,7 +74,12 @@ export function PageShell({
         ) : null}
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col px-4 py-5 md:px-6">
+      <div
+        className={cn(
+          "flex min-h-0 flex-1 flex-col",
+          !bleed && "px-4 py-5 md:px-6",
+        )}
+      >
         {children}
       </div>
     </>

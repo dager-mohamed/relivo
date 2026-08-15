@@ -14,6 +14,7 @@ import {
   createCompanyColumns,
 } from "#/components/companies/companies-columns";
 import { CompanyDrawer } from "#/components/companies/company-drawer";
+import type { CompanyPatch } from "#/components/companies/company-properties";
 import { CompaniesFilters } from "#/components/companies/companies-filters";
 import type { CompanyFilters } from "#/lib/companies/filters";
 import type { CompanyListRow } from "#/mocks/company-rows";
@@ -25,6 +26,7 @@ export function CompaniesTable({
   filtered,
   onFiltersChange,
   onClearFilters,
+  onEdit,
 }: {
   rows: CompanyListRow[];
   filters: CompanyFilters;
@@ -32,10 +34,17 @@ export function CompaniesTable({
   filtered: boolean;
   onFiltersChange: (filters: CompanyFilters) => void;
   onClearFilters: () => void;
+  onEdit: (id: string, patch: CompanyPatch) => void;
 }) {
-  const [open, setOpen] = React.useState<CompanyListRow | null>(null);
+  // The id, not the row: an edit must reach the open drawer, and a snapshot
+  // taken at open time would go stale the moment a field changes.
+  const [openId, setOpenId] = React.useState<string | null>(null);
+  const open = openId ? (rows.find((row) => row.id === openId) ?? null) : null;
 
-  const columns = React.useMemo(() => createCompanyColumns(setOpen), []);
+  const columns = React.useMemo(
+    () => createCompanyColumns((company) => setOpenId(company.id)),
+    [],
+  );
 
   const table = useAppTable({
     data: rows,
@@ -93,7 +102,11 @@ export function CompaniesTable({
         </BulkBar>
       </div>
 
-      <CompanyDrawer company={open} onClose={() => setOpen(null)} />
+      <CompanyDrawer
+        company={open}
+        onClose={() => setOpenId(null)}
+        onEdit={onEdit}
+      />
     </table.AppTable>
   );
 }
