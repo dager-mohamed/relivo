@@ -80,7 +80,7 @@
 ## About The Project
 
 <div align="center">
-  <video src="https://github.com/dager-mohamed/relivo/raw/main/packages/assets/videos/demo.mp4" controls muted loop width="100%">
+  <video src="https://github.com/user-attachments/assets/2349fcd6-5dae-4a1e-930a-3a8a2d3bb8e4" controls muted loop width="100%">
     <a href="https://github.com/dager-mohamed/relivo/raw/main/packages/assets/videos/demo.mp4">Watch the demo</a>
   </video>
 </div>
