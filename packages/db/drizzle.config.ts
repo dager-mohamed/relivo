@@ -12,7 +12,9 @@ if (!url) {
 
 export default defineConfig({
   dialect: "postgresql",
-  schema: "./src/schema.ts",
+  // The barrel, not a glob: every table reaches migrations through this
+  // re-export, so a file nobody exports is a file drizzle-kit never sees.
+  schema: "./src/schema/index.ts",
   out: "./drizzle",
   dbCredentials: { url },
   verbose: true,

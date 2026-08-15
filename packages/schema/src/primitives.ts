@@ -18,3 +18,8 @@ export const domain = z
     "Must be a domain like example.com",
   );
 export type Domain = z.infer<typeof domain>;
+
+// Keyed by platform rather than fixed columns — providers disagree on
+// coverage. Insertion order is the panel's "+N" display order.
+export const socials = z.record(z.string().trim().min(1), z.url());
+export type Socials = z.infer<typeof socials>;

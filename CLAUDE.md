@@ -29,7 +29,7 @@ Solo developer, 19, engineering student, a few hours a week. Learning as I go â€
 - **Push back when I'm wrong.** Don't implement something you think is a mistake without saying so first.
 - **Say when you're unsure.** TanStack Start is RC, Base UI and the Nova preset are new, AI SDK 7 is recent. Guessing at an API costs more than "I'd check the docs for this one."
 - **Don't over-engineer.** No abstraction layers over dependencies, no premature generalization, no config for things that aren't varying yet. Propose the smaller version.
-- **Comments stay short.** One line for the non-obvious _why_. No multi-paragraph blocks, no restating what the code says.
+- **Comments stay short.** One line for the non-obvious _why_. No multi-paragraph blocks, no restating what the code says. This applies per-file, not per-decision: if a rule is already written once (here, in DECISIONS.md, or elsewhere in the same file), don't repeat the explanation at every call site â€” reference it or leave it implicit. Err toward fewer comments; most lines don't need one.
 
 ## Workflow
 

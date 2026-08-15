@@ -21,3 +21,8 @@ export const client = postgres(url);
 export const db = drizzle({ client });
 
 export type Database = typeof db;
+
+// The handle a db.transaction() callback receives. Helpers accept
+// `Database | Transaction` so they work atomically with a caller's
+// transaction, or standalone.
+export type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
