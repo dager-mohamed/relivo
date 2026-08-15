@@ -5,19 +5,13 @@ import {
   ChatBubbleLeftRightIcon,
   CheckCircleIcon,
   Cog6ToothIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
   Squares2X2Icon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
+import lockupBlack from "@repo/assets/icons/lockup-h-black.svg";
+import lockupWhite from "@repo/assets/icons/lockup-h-white.svg";
 import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
-import { Button } from "@repo/ui/components/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@repo/ui/components/input-group";
 import {
   Sidebar,
   SidebarContent,
@@ -72,28 +66,20 @@ export function AppSidebar({
     // `inset` floats the content as a rounded panel and drops the sidebar's
     // right border — the ground becomes chrome, the panel becomes the page.
     <Sidebar variant="inset">
-      <SidebarHeader className="gap-2 pb-1">
+      <SidebarHeader className="gap-0 pb-2">
+        <div className="flex items-center px-2 pt-2 pb-5">
+          <img
+            src={lockupBlack}
+            alt="Relivo"
+            className="h-auto w-20 dark:hidden"
+          />
+          <img
+            src={lockupWhite}
+            alt="Relivo"
+            className="hidden h-auto w-24 dark:block"
+          />
+        </div>
         <WorkspaceSwitcher name={workspace.name} />
-
-        {/* The only filled surface in the sidebar — nothing else competes. */}
-        <div className="flex items-center gap-1.5 px-2">
-          <Button className="flex-1 justify-start gap-1.5">
-            <PlusIcon />
-            New Deal
-          </Button>
-          <Button variant="outline" size="icon" aria-label="Command palette">
-            <span className="text-xs">⌘K</span>
-          </Button>
-        </div>
-
-        <div className="px-2">
-          <InputGroup className="bg-transparent">
-            <InputGroupAddon>
-              <MagnifyingGlassIcon className="size-3.5!" />
-            </InputGroupAddon>
-            <InputGroupInput placeholder="Search" />
-          </InputGroup>
-        </div>
       </SidebarHeader>
 
       <SidebarContent>

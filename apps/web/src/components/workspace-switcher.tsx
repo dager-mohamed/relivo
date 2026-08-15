@@ -21,8 +21,6 @@ import {
   SidebarMenuItem,
 } from "@repo/ui/components/sidebar";
 
-import { RelivoMark } from "#/components/relivo-mark";
-
 export function WorkspaceSwitcher({ name }: { name: string }) {
   return (
     <SidebarMenu>
@@ -30,10 +28,10 @@ export function WorkspaceSwitcher({ name }: { name: string }) {
         <DropdownMenu>
           {/* `render`, not `asChild` — Base UI. */}
           <DropdownMenuTrigger
-            render={<SidebarMenuButton size="lg" className="gap-2.5" />}
+            render={<SidebarMenuButton className="gap-2.5" />}
           >
-            <RelivoMark className="size-5 shrink-0" />
-            <span className="truncate font-heading font-semibold">{name}</span>
+            <WorkspaceAvatar name={name} />
+            <span className="truncate font-medium">{name}</span>
             <ChevronUpDownIcon className="ml-auto text-sidebar-foreground/50" />
           </DropdownMenuTrigger>
 
@@ -48,12 +46,12 @@ export function WorkspaceSwitcher({ name }: { name: string }) {
                 Workspaces
               </DropdownMenuLabel>
               <DropdownMenuItem>
-                <RelivoMark className="size-4" />
+                <WorkspaceAvatar name={name} />
                 {name}
                 <CheckIcon className="ml-auto" />
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <RelivoMark className="size-4 opacity-40" />
+                <WorkspaceAvatar name="Sandbox" />
                 Sandbox
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -75,5 +73,17 @@ export function WorkspaceSwitcher({ name }: { name: string }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
+  );
+}
+
+/**
+ * An initial, not the Relivo mark — the lockup already sits directly above
+ * this, and a workspace is not the product.
+ */
+function WorkspaceAvatar({ name }: { name: string }) {
+  return (
+    <span className="flex size-4 shrink-0 items-center justify-center rounded-sm bg-sidebar-foreground/10 text-[0.5625rem] font-semibold">
+      {name.slice(0, 1)}
+    </span>
   );
 }

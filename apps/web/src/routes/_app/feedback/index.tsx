@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftRightIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "@repo/ui/components/button";
 
@@ -14,13 +14,23 @@ function FeedbackPage() {
   return (
     <PageShell
       title="Feedback"
-      actions={<Button variant="outline">New feedback</Button>}
+      actions={
+        <Button variant="outline">
+          <PlusIcon />
+          New feedback
+        </Button>
+      }
     >
       <EmptyState
         icon={ChatBubbleLeftRightIcon}
         title="No feedback yet"
         description="Feature requests land here with the value of every deal blocked on them."
-        action={<Button variant="outline">New feedback</Button>}
+        action={
+          <Button variant="outline">
+            <PlusIcon />
+            New feedback
+          </Button>
+        }
       />
     </PageShell>
   );

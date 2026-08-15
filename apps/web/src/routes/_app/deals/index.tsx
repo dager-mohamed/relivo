@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Squares2X2Icon } from "@heroicons/react/24/outline";
+import { PlusIcon, Squares2X2Icon } from "@heroicons/react/24/outline";
 
 import { Button } from "@repo/ui/components/button";
 
@@ -12,16 +12,25 @@ export const Route = createFileRoute("/_app/deals/")({
 
 function DealsPage() {
   return (
-    // Outline, not filled — the sidebar's New Deal stays the only primary.
     <PageShell
       title="Deals"
-      actions={<Button variant="outline">New deal</Button>}
+      actions={
+        <Button variant="outline">
+          <PlusIcon />
+          New deal
+        </Button>
+      }
     >
       <EmptyState
         icon={Squares2X2Icon}
         title="No deals yet"
         description="The pipeline starts at qualified. Add the company you spoke to most recently."
-        action={<Button variant="outline">New deal</Button>}
+        action={
+          <Button variant="outline">
+            <PlusIcon />
+            New deal
+          </Button>
+        }
       />
     </PageShell>
   );

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BuildingOffice2Icon } from "@heroicons/react/24/outline";
+import { BuildingOffice2Icon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "@repo/ui/components/button";
 import { Skeleton } from "@repo/ui/components/skeleton";
@@ -27,7 +27,12 @@ function CompaniesPage() {
   return (
     <PageShell
       title="Companies"
-      actions={<Button variant="outline">New company</Button>}
+      actions={
+        <Button variant="outline">
+          <PlusIcon />
+          New company
+        </Button>
+      }
     >
       {isPending ? (
         <div className="space-y-2">
@@ -46,7 +51,12 @@ function CompaniesPage() {
           icon={BuildingOffice2Icon}
           title="No companies yet"
           description="Type a domain and the rest fills itself in — logo, location, size."
-          action={<Button variant="outline">New company</Button>}
+          action={
+            <Button variant="outline">
+              <PlusIcon />
+              New company
+            </Button>
+          }
         />
       ) : (
         <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
