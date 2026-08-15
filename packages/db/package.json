@@ -5,8 +5,9 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema.ts",
+    "./schema": "./src/schema/index.ts",
     "./zod": "./src/zod/index.ts",
+    "./queries": "./src/queries/index.ts",
     "./client": "./src/client.ts",
     "./orm": "./src/orm.ts"
   },
@@ -21,6 +22,7 @@
     "db:export": "dotenv -e ../../.env -- drizzle-kit export",
     "db:seed": "dotenv -e ../../.env -- tsx src/scripts/seed.ts",
     "db:read": "dotenv -e ../../.env -- tsx src/scripts/read.ts",
+    "db:verify": "dotenv -e ../../.env -- tsx src/scripts/verify.ts",
     "check-types": "tsc --noEmit",
     "lint": "eslint ."
   },

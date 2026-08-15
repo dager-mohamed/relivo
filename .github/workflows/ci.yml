@@ -45,3 +45,50 @@ jobs:
       # one graph and runs independent packages in parallel.
       - name: Lint, typecheck, build
         run: pnpm exec turbo run lint check-types build
+
+  # Separate job because it needs a database; guards DDL (HNSW index,
+  # immutability trigger) that fails silently and won't show up in lint,
+  # types or build.
+  schema:
+    name: Migrations and schema invariants
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        # Must be pgvector/pgvector, not plain postgres.
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: relivo
+          POSTGRES_PASSWORD: relivo
+          POSTGRES_DB: relivo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U relivo -d relivo"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # db:* scripts read the root .env via dotenv-cli.
+      - name: Write .env
+        run: echo "DATABASE_URL=postgres://relivo:relivo@localhost:5432/relivo" > .env
+
+      - name: Migrate
+        run: pnpm --filter @repo/db db:migrate
+
+      - name: Verify schema invariants
+        run: pnpm --filter @repo/db db:verify
