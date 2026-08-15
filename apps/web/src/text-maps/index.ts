@@ -1,6 +1,5 @@
 export { formatMoney } from "./money";
-export {
-  dealStageTypeText,
-  feedbackStatusText,
-  nextStepSourceText,
-} from "./status";
+export { dealStageTypeText } from "./deal";
+export { feedbackStatusText } from "./feedback";
+export { nextStepSourceText } from "./next-step";
+export type { Tone } from "./tone";

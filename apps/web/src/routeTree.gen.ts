@@ -18,6 +18,7 @@ import { Route as AppNextStepsIndexRouteImport } from './routes/_app/next-steps/
 import { Route as AppPeopleIndexRouteImport } from './routes/_app/people/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
+import { Route as AppCompaniesCompanyIdIndexRouteImport } from './routes/_app/companies/$companyId/index'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -63,6 +64,12 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
   path: '/api/trpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCompaniesCompanyIdIndexRoute =
+  AppCompaniesCompanyIdIndexRouteImport.update({
+    id: '/companies/$companyId/',
+    path: '/companies/$companyId/',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/next-steps/': typeof AppNextStepsIndexRoute
   '/people/': typeof AppPeopleIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
+  '/companies/$companyId/': typeof AppCompaniesCompanyIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
@@ -83,6 +91,7 @@ export interface FileRoutesByTo {
   '/next-steps': typeof AppNextStepsIndexRoute
   '/people': typeof AppPeopleIndexRoute
   '/settings': typeof AppSettingsIndexRoute
+  '/companies/$companyId': typeof AppCompaniesCompanyIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +104,7 @@ export interface FileRoutesById {
   '/_app/next-steps/': typeof AppNextStepsIndexRoute
   '/_app/people/': typeof AppPeopleIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
+  '/_app/companies/$companyId/': typeof AppCompaniesCompanyIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/next-steps/'
     | '/people/'
     | '/settings/'
+    | '/companies/$companyId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/next-steps'
     | '/people'
     | '/settings'
+    | '/companies/$companyId'
   id:
     | '__root__'
     | '/_app'
@@ -128,6 +140,7 @@ export interface FileRouteTypes {
     | '/_app/next-steps/'
     | '/_app/people/'
     | '/_app/settings/'
+    | '/_app/companies/$companyId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/companies/$companyId/': {
+      id: '/_app/companies/$companyId/'
+      path: '/companies/$companyId'
+      fullPath: '/companies/$companyId/'
+      preLoaderRoute: typeof AppCompaniesCompanyIdIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -211,6 +231,7 @@ interface AppRouteRouteChildren {
   AppNextStepsIndexRoute: typeof AppNextStepsIndexRoute
   AppPeopleIndexRoute: typeof AppPeopleIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+  AppCompaniesCompanyIdIndexRoute: typeof AppCompaniesCompanyIdIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -221,6 +242,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppNextStepsIndexRoute: AppNextStepsIndexRoute,
   AppPeopleIndexRoute: AppPeopleIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
+  AppCompaniesCompanyIdIndexRoute: AppCompaniesCompanyIdIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

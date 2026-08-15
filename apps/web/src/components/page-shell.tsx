@@ -11,19 +11,21 @@ import {
 import { SidebarTrigger } from "@repo/ui/components/sidebar";
 
 /**
- * The frame every page sits in: one 48px band carrying where-you-are on the
- * left and what-you-can-do on the right, then the content.
+ * The frame every page sits in, and the one header bar every list screen
+ * reuses: icon, title and filter control on the left, primary action right.
  *
- * It is sticky and hairline-separated because content scrolls underneath —
- * without the rule the first row collides with the title.
+ * Sticky and hairline-separated because content scrolls underneath — without
+ * the rule the first row collides with the title.
  */
 export function PageShell({
   title,
+  icon: Icon,
   parent,
   actions,
   children,
 }: {
   title: string;
+  icon?: React.ComponentType<{ className?: string }>;
   /** Record pages sit under their list — "Companies / Atari". */
   parent?: { label: string; to: LinkProps["to"] };
   actions?: React.ReactNode;
@@ -34,6 +36,10 @@ export function PageShell({
       <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-4 md:px-6">
         {/* Below md the sidebar is an off-canvas sheet with no other way in. */}
         <SidebarTrigger className="-ml-1 md:hidden" />
+
+        {Icon ? (
+          <Icon className="size-4 shrink-0 text-muted-foreground" />
+        ) : null}
 
         {parent ? (
           <Breadcrumb className="min-w-0">

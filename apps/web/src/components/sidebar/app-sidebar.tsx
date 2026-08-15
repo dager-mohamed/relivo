@@ -23,14 +23,14 @@ import {
   SidebarMenuItem,
 } from "@repo/ui/components/sidebar";
 
-import { NavSection } from "#/components/nav-section";
-import { NavUser } from "#/components/nav-user";
-import { WorkspaceSwitcher } from "#/components/workspace-switcher";
+import { NavSection } from "#/components/sidebar/nav-section";
+import { NavUser } from "#/components/sidebar/nav-user";
+import { WorkspaceSwitcher } from "#/components/sidebar/workspace-switcher";
 import {
   persistSections,
   type SidebarSection,
   type SidebarSectionState,
-} from "#/lib/sidebar-cookies";
+} from "#/lib/sidebar/cookies";
 import { favorites, workspace, type Favorite } from "#/mocks";
 import { formatMoney } from "#/text-maps";
 

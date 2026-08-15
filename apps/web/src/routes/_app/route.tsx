@@ -2,8 +2,8 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 
 import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar";
 
-import { AppSidebar } from "#/components/app-sidebar";
-import { getSidebarState } from "#/lib/sidebar-cookies";
+import { AppSidebar } from "#/components/sidebar/app-sidebar";
+import { getSidebarState } from "#/lib/sidebar/cookies";
 
 export const Route = createFileRoute("/_app")({
   // Pathless layout: runs once on entry and stays mounted, so the sidebar does
