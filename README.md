@@ -79,7 +79,11 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/dager-mohamed/relivo)
+<div align="center">
+  <video src="https://github.com/dager-mohamed/relivo/raw/main/packages/assets/videos/demo.mp4" controls muted loop width="100%">
+    <a href="https://github.com/dager-mohamed/relivo/raw/main/packages/assets/videos/demo.mp4">Watch the demo</a>
+  </video>
+</div>
 
 You're a founder, and you're the one selling. Five to forty live deals, no sales team, nobody to keep a CRM tidy.
 
@@ -421,7 +425,6 @@ Distributed under the GNU Affero General Public License v3.0. See `LICENSE` for 
 [issues-url]: https://github.com/dager-mohamed/relivo/issues
 [license-shield]: https://img.shields.io/github/license/dager-mohamed/relivo.svg?style=for-the-badge
 [license-url]: https://github.com/dager-mohamed/relivo/blob/main/LICENSE
-[product-screenshot]: packages/assets/images/screenshot.png
 
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 
