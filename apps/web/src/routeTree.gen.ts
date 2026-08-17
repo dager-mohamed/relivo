@@ -19,6 +19,7 @@ import { Route as AppPeopleIndexRouteImport } from './routes/_app/people/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc/$'
 import { Route as AppCompaniesCompanyIdIndexRouteImport } from './routes/_app/companies/$companyId/index'
+import { Route as AppPeoplePersonIdIndexRouteImport } from './routes/_app/people/$personId/index'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
@@ -70,6 +71,11 @@ const AppCompaniesCompanyIdIndexRoute =
     path: '/companies/$companyId/',
     getParentRoute: () => AppRouteRoute,
   } as any)
+const AppPeoplePersonIdIndexRoute = AppPeoplePersonIdIndexRouteImport.update({
+  id: '/people/$personId/',
+  path: '/people/$personId/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/people/': typeof AppPeopleIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
   '/companies/$companyId/': typeof AppCompaniesCompanyIdIndexRoute
+  '/people/$personId/': typeof AppPeoplePersonIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/people': typeof AppPeopleIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/companies/$companyId': typeof AppCompaniesCompanyIdIndexRoute
+  '/people/$personId': typeof AppPeoplePersonIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/_app/people/': typeof AppPeopleIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/companies/$companyId/': typeof AppCompaniesCompanyIdIndexRoute
+  '/_app/people/$personId/': typeof AppPeoplePersonIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/people/'
     | '/settings/'
     | '/companies/$companyId/'
+    | '/people/$personId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/settings'
     | '/companies/$companyId'
+    | '/people/$personId'
   id:
     | '__root__'
     | '/_app'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/_app/people/'
     | '/_app/settings/'
     | '/_app/companies/$companyId/'
+    | '/_app/people/$personId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -220,6 +232,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCompaniesCompanyIdIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/people/$personId/': {
+      id: '/_app/people/$personId/'
+      path: '/people/$personId'
+      fullPath: '/people/$personId/'
+      preLoaderRoute: typeof AppPeoplePersonIdIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -232,6 +251,7 @@ interface AppRouteRouteChildren {
   AppPeopleIndexRoute: typeof AppPeopleIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppCompaniesCompanyIdIndexRoute: typeof AppCompaniesCompanyIdIndexRoute
+  AppPeoplePersonIdIndexRoute: typeof AppPeoplePersonIdIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -243,6 +263,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppPeopleIndexRoute: AppPeopleIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppCompaniesCompanyIdIndexRoute: AppCompaniesCompanyIdIndexRoute,
+  AppPeoplePersonIdIndexRoute: AppPeoplePersonIdIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

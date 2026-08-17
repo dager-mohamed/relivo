@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@repo/ui/components/popover";
+import { formatPhone, normalizePhone, phoneMessage } from "@repo/schema";
 import { cn } from "@repo/ui/lib/utils";
 
 import { formatMoney } from "#/text-maps";
@@ -121,6 +122,75 @@ export function ChipText({
             className="h-7 w-full bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground/50"
           />
         )}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+/**
+ * Like `ChipMoney`, this keeps a draft: "+1 408" is a state you pass through
+ * on the way to a number and is not one yet. The chip only fills once what you
+ * typed parses, so a half-typed number never reaches the record.
+ */
+export function ChipPhone({
+  icon,
+  label,
+  value,
+  onChange,
+}: {
+  icon: Icon;
+  label: string;
+  value: string | null;
+  onChange: (next: string | null) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const [draft, setDraft] = React.useState("");
+
+  React.useEffect(() => {
+    if (!open) setDraft(value ? formatPhone(value) : "");
+  }, [value, open]);
+
+  const typed = draft.trim();
+  const invalid = typed !== "" && normalizePhone(typed) === null;
+
+  const write = (next: string) => {
+    setDraft(next);
+    const trimmed = next.trim();
+    onChange(trimmed === "" ? null : normalizePhone(trimmed));
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        render={
+          <FieldChip
+            icon={icon}
+            label={label}
+            value={value === null ? null : formatPhone(value)}
+          />
+        }
+      />
+      <PopoverContent align="start" className="w-64 gap-1 p-1.5">
+        <input
+          autoFocus
+          type="tel"
+          inputMode="tel"
+          value={draft}
+          onChange={(event) => write(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !invalid) {
+              event.preventDefault();
+              setOpen(false);
+            }
+          }}
+          placeholder="+1 408 555 0163"
+          aria-label={label}
+          aria-invalid={invalid || undefined}
+          className="h-7 w-full bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground/50"
+        />
+        {invalid ? (
+          <span className="px-1 text-xs text-destructive">{phoneMessage}</span>
+        ) : null}
       </PopoverContent>
     </Popover>
   );

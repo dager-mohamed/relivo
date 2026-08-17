@@ -1,11 +1,11 @@
 import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  ArrowTopRightOnSquareIcon,
-  BuildingOffice2Icon,
   EllipsisHorizontalIcon,
+  EnvelopeIcon,
   LinkIcon,
   StarIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
@@ -18,53 +18,52 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 
-import { CompanyRecord } from "#/components/companies/company-record";
-import type { CompanyPatch } from "#/components/companies/company-properties";
+import { PersonHeader } from "#/components/people/person-header";
+import { PersonPanel } from "#/components/people/person-panel";
+import type { PersonPatch } from "#/components/people/person-properties";
 import { EmptyState } from "#/components/empty-state";
 import { PageShell } from "#/components/page-shell";
-import { companyRows } from "#/mocks/company-rows";
+import { now, personFeed } from "#/mocks/person-activity";
+import { personLabel, personRows } from "#/mocks/person-rows";
 
-export const Route = createFileRoute("/_app/companies/$companyId/")({
-  component: CompanyPage,
+export const Route = createFileRoute("/_app/people/$personId/")({
+  component: PersonPage,
 });
 
-function CompanyPage() {
-  const { companyId } = Route.useParams();
-  // Local until `companies.byId` exists, same as the list screen — a query
-  // plus a mutation replaces this state and nothing else on the page.
-  const [rows, setRows] = React.useState(companyRows);
+function PersonPage() {
+  const { personId } = Route.useParams();
+  // Local until `people.byId` exists, same as the list screen — a query plus
+  // a mutation replaces this state and nothing else on the page.
+  const [rows, setRows] = React.useState(personRows);
   const [starred, setStarred] = React.useState(false);
 
-  const company = rows.find((row) => row.id === companyId);
+  const person = rows.find((row) => row.id === personId);
 
   const handleEdit = React.useCallback(
-    (patch: CompanyPatch) => {
+    (patch: PersonPatch) => {
       setRows((current) =>
         current.map((row) =>
-          row.id === companyId ? { ...row, ...patch } : row,
+          row.id === personId ? { ...row, ...patch } : row,
         ),
       );
     },
-    [companyId],
+    [personId],
   );
 
-  if (!company) {
+  if (!person) {
     return (
-      <PageShell
-        title="Company"
-        parent={{ label: "Companies", to: "/companies" }}
-      >
+      <PageShell title="Person" parent={{ label: "People", to: "/people" }}>
         <EmptyState
-          icon={BuildingOffice2Icon}
-          title="This company is gone"
-          description="It may have been deleted, or the link may be out of date."
+          icon={UsersIcon}
+          title="This person is gone"
+          description="They may have been deleted, or the link may be out of date."
           action={
             <Button
               variant="outline"
               nativeButton={false}
-              render={<Link to="/companies" />}
+              render={<Link to="/people" />}
             >
-              Back to companies
+              Back to people
             </Button>
           }
         />
@@ -72,13 +71,30 @@ function CompanyPage() {
     );
   }
 
+  const label = personLabel(person);
+  // The masthead needs the newest entry, which only the feed knows. Cheap to
+  // rebuild — it is derived from the person, not stored.
+  const lastTouch = personFeed(person)[0]?.at ?? null;
+
   return (
     <PageShell
-      title={company.name}
-      parent={{ label: "Companies", to: "/companies" }}
+      title={label}
+      parent={{ label: "People", to: "/people" }}
       bleed
       actions={
         <>
+          {person.email ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={`Email ${label}`}
+              nativeButton={false}
+              render={<a href={`mailto:${person.email}`} />}
+            >
+              <EnvelopeIcon className="size-4" />
+            </Button>
+          ) : null}
+
           <Button
             variant="ghost"
             size="icon-sm"
@@ -117,25 +133,25 @@ function CompanyPage() {
                   <LinkIcon />
                   Copy record link
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  render={
-                    <a
-                      href={`https://${company.domain}`}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    />
-                  }
-                >
-                  <ArrowTopRightOnSquareIcon />
-                  Open website
-                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
       }
     >
-      <CompanyRecord key={company.id} company={company} onEdit={handleEdit} />
+      <PersonPanel
+        key={person.id}
+        person={person}
+        header={
+          <PersonHeader
+            person={person}
+            lastTouch={lastTouch}
+            now={now}
+            onEdit={handleEdit}
+          />
+        }
+        onEdit={handleEdit}
+      />
     </PageShell>
   );
 }

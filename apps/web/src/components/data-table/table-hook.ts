@@ -4,6 +4,9 @@ import {
   createTableHook,
   rowSelectionFeature,
   rowSortingFeature,
+  sortFn_basic,
+  sortFn_datetime,
+  sortFn_text,
   tableFeatures,
 } from "@tanstack/react-table";
 
@@ -19,6 +22,16 @@ export const { createAppColumnHelper, useAppTable, useTableContext } =
     features: tableFeatures({
       rowSortingFeature,
       sortedRowModel: createSortedRowModel(),
+      // Comparators are a registry in v9, and `sortFn: 'auto'` resolves
+      // through it — an unregistered one warns and silently does nothing.
+      // These three cover what we list: names and roles are text, money and
+      // counts are numbers, created/updated are Dates. Registering the three
+      // rather than the whole object keeps the rest out of the bundle.
+      sortFns: {
+        text: sortFn_text,
+        basic: sortFn_basic,
+        datetime: sortFn_datetime,
+      },
       rowSelectionFeature,
       columnVisibilityFeature,
     }),

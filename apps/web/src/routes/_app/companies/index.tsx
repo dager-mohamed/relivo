@@ -42,9 +42,12 @@ function CompaniesPage() {
     );
   }, []);
 
+  // Re-read rather than prepend: `addCompanyRow` has already filed the row, and
+  // state holds a reference to that same array — prepending it again puts the
+  // row in twice, under one key. A fresh copy is what makes React re-render.
   const handleCreate = React.useCallback((draft: CompanyDraft) => {
     const row = addCompanyRow(draft);
-    setAll((current) => [row, ...current]);
+    setAll([...companyRows]);
     return row.id;
   }, []);
 

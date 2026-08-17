@@ -21,6 +21,8 @@ import {
 } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
 
+import { formatPhone, normalizePhone, phoneMessage } from "@repo/schema";
+
 import { hasSocialIcon, SocialIcon } from "#/components/icons/social";
 import {
   detectPlatform,
@@ -109,6 +111,82 @@ export function EditableText({
       className={cn(RESTING, multiline && "whitespace-pre-line", className)}
     >
       {value ?? <Placeholder>{placeholder}</Placeholder>}
+    </button>
+  );
+}
+
+/**
+ * Phone fields are free text in the column, which is how "call me maybe" gets
+ * filed as a number. This parses what you type and only commits when it is a
+ * real number, storing canonical E.164 and showing it formatted.
+ *
+ * Invalid input keeps you in the field rather than discarding what you typed —
+ * a phone is usually copied from somewhere and retyping it is the annoying
+ * part. Escape still reverts, and emptying it still clears the field.
+ */
+export function EditablePhone({
+  value,
+  onCommit,
+  placeholder = "Empty",
+}: {
+  value: string | null;
+  onCommit: (next: string | null) => void;
+  placeholder?: string;
+}) {
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState("");
+
+  React.useEffect(() => {
+    if (!editing) setDraft(value ? formatPhone(value) : "");
+  }, [value, editing]);
+
+  if (editing) {
+    const typed = draft.trim();
+    const normalized = typed === "" ? null : normalizePhone(typed);
+    const invalid = typed !== "" && normalized === null;
+
+    const commit = () => {
+      if (invalid) return;
+      setEditing(false);
+      if (normalized !== value) onCommit(normalized);
+    };
+
+    return (
+      <div className="flex flex-col gap-1">
+        <input
+          autoFocus
+          type="tel"
+          inputMode="tel"
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          onBlur={commit}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") commit();
+            if (event.key === "Escape") {
+              setDraft(value ? formatPhone(value) : "");
+              setEditing(false);
+            }
+          }}
+          placeholder="+1 408 555 0163"
+          aria-invalid={invalid || undefined}
+          className={cn(INPUT, invalid && "border-destructive")}
+        />
+        {invalid ? (
+          <span className="px-1.5 text-xs text-destructive">
+            {phoneMessage}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} className={RESTING}>
+      {value === null ? (
+        <Placeholder>{placeholder}</Placeholder>
+      ) : (
+        formatPhone(value)
+      )}
     </button>
   );
 }

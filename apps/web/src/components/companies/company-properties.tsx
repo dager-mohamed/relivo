@@ -17,6 +17,7 @@ import {
   AddSocialLink,
   EditableMoney,
   EditableSelect,
+  EditablePhone,
   EditableText,
   SocialLinks,
 } from "#/components/record-panel/editable-field";
@@ -117,7 +118,7 @@ export function CompanyProperties({
 
       <PanelSection id="company-contact" title="Contact">
         <FieldRow label="Phone" icon={PhoneIcon}>
-          <EditableText
+          <EditablePhone
             value={company.phone}
             onCommit={(phone) => onEdit({ phone })}
             placeholder="Add phone"

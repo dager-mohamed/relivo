@@ -1,4 +1,11 @@
-import { companyNameFromDomain, domain, money, socials } from "@repo/schema";
+import {
+  companyNameFromDomain,
+  domain,
+  isPhone,
+  money,
+  phoneMessage,
+  socials,
+} from "@repo/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -15,6 +22,7 @@ const companyInsertBase = createInsertSchema(companies, {
   domain,
   name: (s) => s.trim().min(1).max(200),
   description: (s) => s.max(5000),
+  phone: (s) => s.trim().max(50).refine(isPhone, phoneMessage),
   socials: socials.nullish(),
   funding: money.nullish(),
 }).omit({ id: true, manualFields: true, createdAt: true, updatedAt: true });

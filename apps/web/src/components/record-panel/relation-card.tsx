@@ -52,13 +52,20 @@ export function RelationSection({
       </header>
 
       {count === 0 ? (
-        <p className="rounded-lg border border-dashed border-border px-3 py-3 text-sm text-muted-foreground">
-          {empty}
-        </p>
+        <RelationEmpty>{empty}</RelationEmpty>
       ) : (
         <div className="flex flex-col gap-1.5">{children}</div>
       )}
     </section>
+  );
+}
+
+/** Proposes the next action; never reports absence. */
+export function RelationEmpty({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="rounded-lg border border-dashed border-border px-3 py-3 text-sm text-muted-foreground">
+      {children}
+    </p>
   );
 }
 

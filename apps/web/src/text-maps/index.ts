@@ -17,4 +17,4 @@ export {
   socialPlatforms,
   type SocialPlatform,
 } from "./social";
-export type { Tone } from "./tone";
+export { toneDot, toneRing, toneText, type Tone } from "./tone";

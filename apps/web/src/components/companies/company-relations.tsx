@@ -22,6 +22,7 @@ import {
   feedbackStatusText,
   formatDateString,
   formatMoney,
+  toneText,
 } from "#/text-maps";
 
 /**
@@ -54,7 +55,7 @@ export function CompanyRelations({
               return (
                 <RelationRow key={deal.id}>
                   <stage.icon
-                    className={`size-4 shrink-0 ${TONE_TEXT[stage.tone]}`}
+                    className={`size-4 shrink-0 ${toneText[stage.tone]}`}
                     aria-label={stage.label}
                   />
                   <span className="shrink-0 font-medium tabular-nums">
@@ -125,7 +126,7 @@ export function CompanyRelations({
             return (
               <RelationRow key={item.id}>
                 <status.icon
-                  className={`size-4 shrink-0 ${TONE_TEXT[status.tone]}`}
+                  className={`size-4 shrink-0 ${toneText[status.tone]}`}
                   aria-label={status.label}
                 />
                 <span className="truncate">{item.title}</span>
@@ -140,11 +141,3 @@ export function CompanyRelations({
     </div>
   );
 }
-
-const TONE_TEXT: Record<string, string> = {
-  info: "text-info",
-  success: "text-success",
-  destructive: "text-destructive",
-  warning: "text-warning",
-  neutral: "text-muted-foreground",
-};

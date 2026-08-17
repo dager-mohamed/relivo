@@ -13,6 +13,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "libphonenumber-js": "^1.13.11",
     "zod": "^4.3.6"
   },
   "devDependencies": {

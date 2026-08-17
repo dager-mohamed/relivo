@@ -24,6 +24,8 @@ import {
   dealStageTypeText,
   feedbackStatusText,
   formatMoney,
+  toneDot,
+  toneRing,
 } from "#/text-maps";
 
 const helper = createAppColumnHelper<CompanyListRow>();
@@ -34,22 +36,6 @@ export const companyColumnLabels: Record<string, string> = {
   totalDealValue: "Deals",
   feedback: "Priority feedback",
   createdAt: "Created",
-};
-
-const TONE_RING: Record<string, string> = {
-  info: "border-info",
-  success: "border-success",
-  destructive: "border-destructive",
-  warning: "border-warning",
-  neutral: "border-muted-foreground",
-};
-
-const TONE_DOT: Record<string, string> = {
-  info: "bg-info",
-  success: "bg-success",
-  destructive: "bg-destructive",
-  warning: "bg-warning",
-  neutral: "bg-muted-foreground",
 };
 
 export function createCompanyColumns(
@@ -144,7 +130,7 @@ export function createCompanyColumns(
           <div className="flex items-center gap-1.5">
             <span className="inline-flex items-center gap-2 rounded-lg border border-border py-0.5 pr-2.5 pl-2">
               <span
-                className={`size-2.5 shrink-0 rounded-full border-[1.5px] ${TONE_RING[tone]}`}
+                className={`size-2.5 shrink-0 rounded-full border-[1.5px] ${toneRing[tone]}`}
               />
               <span className="text-xs font-medium tabular-nums">
                 DEAL-{first!.number}
@@ -175,7 +161,7 @@ export function createCompanyColumns(
           <div className="flex items-center gap-1.5">
             <span className="inline-flex items-center gap-2 rounded-lg border border-border py-0.5 pr-2.5 pl-2">
               <span
-                className={`size-1.5 shrink-0 rounded-full ${TONE_DOT[tone]}`}
+                className={`size-1.5 shrink-0 rounded-full ${toneDot[tone]}`}
               />
               <span className="text-xs">{first!.title}</span>
             </span>
