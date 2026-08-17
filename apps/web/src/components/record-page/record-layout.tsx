@@ -22,9 +22,12 @@ export function RecordLayout({
           {children}
         </div>
 
-        {/* 340 against a fluid centre: reference material, not a second column
-            of equal standing. */}
-        <aside className="shrink-0 border-t border-border @4xl:w-[340px] @4xl:overflow-y-auto @4xl:border-t-0 @4xl:border-l">
+        {/* Left of the content, at 340 against a fluid rest: the fields are what
+            the record *is*, and the tabs beside them are views onto it.
+
+            `order`, not DOM order — stacked, the masthead has to come first or
+            you land on a list of fields with nothing saying whose they are. */}
+        <aside className="shrink-0 border-t border-border @4xl:order-first @4xl:w-[340px] @4xl:overflow-y-auto @4xl:border-t-0 @4xl:border-r">
           {panel}
         </aside>
       </div>

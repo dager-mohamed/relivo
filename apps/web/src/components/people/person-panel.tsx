@@ -1,51 +1,64 @@
 import * as React from "react";
+import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
 import {
   PersonProperties,
   type PersonPatch,
 } from "#/components/people/person-properties";
+import { EmptyState } from "#/components/empty-state";
 import { ActivityFeed } from "#/components/record-page/activity-feed";
 import { NoteComposer } from "#/components/record-page/note-composer";
-import { RecordLayout } from "#/components/record-page/record-layout";
+import { RecordPanel } from "#/components/record-page/record-panel";
 import { draftNote, now, personFeed } from "#/mocks/person-activity";
 import type { FeedItem } from "#/mocks/feed";
 import type { PersonListRow } from "#/mocks/person-rows";
 
 /**
- * A person's body, in the drawer and on the page both.
+ * A person in the drawer: the fields lead, the feed is a tab behind them.
  *
- * No tabs. The company page splits Overview / Activity / Notes because it has
- * three screens' worth of linked records; a person has one short rail and a
- * feed, and tabbing between a feed and nothing is chrome pretending to be
- * structure.
+ * The record page mounts `PersonRecord` instead — same components, laid out
+ * for the room it has. Both read `PersonProperties`, so the two surfaces
+ * cannot disagree about what a person has.
  *
  * Mount with `key={person.id}` — the feed is seeded once, so editing a field
  * does not discard notes written in this session.
  */
 export function PersonPanel({
   person,
-  header,
   onEdit,
 }: {
   person: PersonListRow;
-  /** The masthead, on the page; the drawer has its own header bar instead. */
-  header?: React.ReactNode;
   onEdit: (patch: PersonPatch) => void;
 }) {
   const [feed, setFeed] = React.useState<FeedItem[]>(() => personFeed(person));
 
+  const notes = feed.filter((item) => item.kind === "note");
   const addNote = (body: string) =>
     setFeed((current) => [draftNote(person, body), ...current]);
 
   return (
-    <RecordLayout
-      panel={<PersonProperties person={person} now={now} onEdit={onEdit} />}
-    >
-      {header}
-      <div className="flex flex-col gap-5 px-6 py-6">
-        <NoteComposer onSubmit={addNote} />
-        <ActivityFeed items={feed} now={now} />
-      </div>
-    </RecordLayout>
+    <RecordPanel
+      home={<PersonProperties person={person} now={now} onEdit={onEdit} />}
+      activity={
+        <>
+          <NoteComposer onSubmit={addNote} />
+          <ActivityFeed items={feed} now={now} />
+        </>
+      }
+      notes={
+        <>
+          <NoteComposer onSubmit={addNote} />
+          {notes.length === 0 ? (
+            <EmptyState
+              icon={DocumentTextIcon}
+              title="No notes yet"
+              description="Write down what was said on a call and it stays attached to this person."
+            />
+          ) : (
+            <ActivityFeed items={notes} now={now} notes="full" />
+          )}
+        </>
+      }
+    />
   );
 }

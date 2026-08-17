@@ -54,10 +54,18 @@ export type CompanyPatch = Partial<
 export function CompanyProperties({
   company,
   now,
+  relations,
   onEdit,
 }: {
   company: CompanyListRow;
   now: Date;
+  /**
+   * Linked records, in the drawer, where they stack under the fields instead
+   * of sitting in their own column. They slot in *above* System so the rail
+   * still ends on the trailer nobody opens a record to read. The page passes
+   * nothing — its relations live in the Overview tab.
+   */
+  relations?: React.ReactNode;
   onEdit: (patch: CompanyPatch) => void;
 }) {
   return (
@@ -150,6 +158,8 @@ export function CompanyProperties({
           />
         </FieldRow>
       </PanelSection>
+
+      {relations}
 
       <PanelSection id="company-system" title="System" defaultOpen={false}>
         <FieldRow label="Created" icon={CalendarIcon}>

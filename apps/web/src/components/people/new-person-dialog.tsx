@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { BriefcaseIcon, PhoneIcon } from "@heroicons/react/24/outline";
 
 import {
@@ -62,10 +62,9 @@ export function NewPersonDialog({
   onOpenChange: (open: boolean) => void;
   existing: readonly PersonListRow[];
   companies: readonly CompanyListRow[];
-  /** Returns the new record's id, which is where we go next. */
-  onCreate: (person: NewPerson) => string;
+  /** See `NewCompanyDialog` — the list decides what follows a create, not this. */
+  onCreate: (person: NewPerson, createMore: boolean) => void;
 }) {
-  const navigate = useNavigate();
   const [draft, setDraft] = React.useState<PersonDraft>(emptyPersonDraft);
   const emailRef = React.useRef<HTMLInputElement>(null);
 
@@ -86,16 +85,16 @@ export function NewPersonDialog({
   const submit = (createMore: boolean) => {
     if (status.kind !== "ready") return false;
 
-    const id = onCreate({
-      name: status.name,
-      email: status.email,
-      companyId: company?.id ?? null,
-      role: draft.role,
-      phone: draft.phone,
-    });
-    if (createMore) return true;
-
-    void navigate({ to: "/people/$personId", params: { personId: id } });
+    onCreate(
+      {
+        name: status.name,
+        email: status.email,
+        companyId: company?.id ?? null,
+        role: draft.role,
+        phone: draft.phone,
+      },
+      createMore,
+    );
     return true;
   };
 

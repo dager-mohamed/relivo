@@ -22,17 +22,11 @@ import {
 import { FieldRow, StaticValue } from "#/components/record-panel/field-row";
 import { PanelSection } from "#/components/record-panel/panel-section";
 import {
+  DealRelationRow,
   RelationEmpty,
-  RelationRow,
 } from "#/components/record-panel/relation-card";
 import type { PersonListRow } from "#/mocks/person-rows";
-import {
-  dealStageTypeText,
-  formatDate,
-  formatDateString,
-  formatMoney,
-  toneText,
-} from "#/text-maps";
+import { formatDate } from "#/text-maps";
 
 /** Only the fields a user owns — the company link and deals are not patchable. */
 export type PersonPatch = Partial<
@@ -104,28 +98,9 @@ export function PersonProperties({
         {person.deals.length === 0 ? (
           <RelationEmpty>Not the contact on any deal yet.</RelationEmpty>
         ) : (
-          person.deals.map((deal) => {
-            const stage = dealStageTypeText[deal.stageType];
-            return (
-              <RelationRow key={deal.id}>
-                <stage.icon
-                  className={`size-4 shrink-0 ${toneText[stage.tone]}`}
-                  aria-label={stage.label}
-                />
-                <span className="shrink-0 font-medium tabular-nums">
-                  DEAL-{deal.number}
-                </span>
-                <span className="truncate tabular-nums">
-                  {deal.value === null ? "—" : formatMoney(deal.value)}
-                </span>
-                {deal.closeDate ? (
-                  <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">
-                    {formatDateString(deal.closeDate, now)}
-                  </span>
-                ) : null}
-              </RelationRow>
-            );
-          })
+          person.deals.map((deal) => (
+            <DealRelationRow key={deal.id} deal={deal} now={now} />
+          ))
         )}
       </PanelSection>
 

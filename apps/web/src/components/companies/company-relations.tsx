@@ -12,23 +12,67 @@ import {
 } from "@repo/ui/components/avatar";
 import { Button } from "@repo/ui/components/button";
 
+import { PanelSection } from "#/components/record-panel/panel-section";
 import {
+  DealRelationRow,
+  RelationEmpty,
   RelationRow,
   RelationSection,
 } from "#/components/record-panel/relation-card";
 import type { CompanyListRow } from "#/mocks/company-rows";
-import {
-  dealStageTypeText,
-  feedbackStatusText,
-  formatDateString,
-  formatMoney,
-  toneText,
-} from "#/text-maps";
+import { feedbackStatusText, formatMoney, toneText } from "#/text-maps";
+
+export function PersonRelationRow({
+  person,
+}: {
+  person: CompanyListRow["people"][number];
+}) {
+  return (
+    <RelationRow>
+      <Avatar className="size-5 shrink-0">
+        <AvatarImage src={person.avatarUrl ?? undefined} />
+        <AvatarFallback className="text-[0.5rem] font-medium">
+          {person.name?.slice(0, 1) ?? "?"}
+        </AvatarFallback>
+      </Avatar>
+      <span className="truncate">{person.name ?? "Unnamed"}</span>
+      <Button
+        variant="ghost"
+        size="icon-xs"
+        aria-label={`Email ${person.name ?? "person"}`}
+        className="ml-auto shrink-0 text-muted-foreground"
+      >
+        <EnvelopeIcon className="size-3.5" />
+      </Button>
+    </RelationRow>
+  );
+}
+
+/** The number on the right is revenue waiting on this request, not a vote. */
+export function FeedbackRelationRow({
+  item,
+}: {
+  item: CompanyListRow["feedback"][number];
+}) {
+  const status = feedbackStatusText[item.status];
+  return (
+    <RelationRow>
+      <status.icon
+        className={`size-4 shrink-0 ${toneText[status.tone]}`}
+        aria-label={status.label}
+      />
+      <span className="truncate">{item.title}</span>
+      <span className="ml-auto shrink-0 font-medium tabular-nums">
+        {item.dealValue === 0 ? "—" : formatMoney(item.dealValue)}
+      </span>
+    </RelationRow>
+  );
+}
 
 /**
- * Everything linked to the company. The grid is a container query, so the same
- * component stacks in the drawer and goes two-up on the record page without
- * either surface passing a layout flag.
+ * Everything linked to the company, on the record page. The grid is a container
+ * query, so it goes two-up when the centre column is wide and stacks when it is
+ * not, without the page passing a layout flag.
  *
  * Deals stay full-width at every size: they carry money, and money wants room.
  */
@@ -50,36 +94,9 @@ export function CompanyRelations({
             onAdd={() => undefined}
             empty="No deals yet. Ready to add?"
           >
-            {company.deals.map((deal) => {
-              const stage = dealStageTypeText[deal.stageType];
-              return (
-                <RelationRow key={deal.id}>
-                  <stage.icon
-                    className={`size-4 shrink-0 ${toneText[stage.tone]}`}
-                    aria-label={stage.label}
-                  />
-                  <span className="shrink-0 font-medium tabular-nums">
-                    DEAL-{deal.number}
-                  </span>
-                  <span className="truncate tabular-nums">
-                    {deal.value === null ? "—" : formatMoney(deal.value)}
-                  </span>
-                  {deal.closeDate ? (
-                    <span className="ml-auto shrink-0 text-xs text-muted-foreground tabular-nums">
-                      {formatDateString(deal.closeDate, now)}
-                    </span>
-                  ) : null}
-                  <Avatar
-                    className={`size-5 shrink-0 ${deal.closeDate ? "" : "ml-auto"}`}
-                  >
-                    <AvatarImage src={deal.owner?.image ?? undefined} />
-                    <AvatarFallback className="text-[0.5rem] font-medium">
-                      {deal.owner?.name.slice(0, 1) ?? "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                </RelationRow>
-              );
-            })}
+            {company.deals.map((deal) => (
+              <DealRelationRow key={deal.id} deal={deal} now={now} />
+            ))}
           </RelationSection>
         </div>
 
@@ -91,28 +108,10 @@ export function CompanyRelations({
           empty="Nobody here yet. Add the person you spoke to."
         >
           {company.people.map((person) => (
-            <RelationRow key={person.id}>
-              <Avatar className="size-5 shrink-0">
-                <AvatarImage src={person.avatarUrl ?? undefined} />
-                <AvatarFallback className="text-[0.5rem] font-medium">
-                  {person.name?.slice(0, 1) ?? "?"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="truncate">{person.name ?? "Unnamed"}</span>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                aria-label={`Email ${person.name ?? "person"}`}
-                className="ml-auto shrink-0 text-muted-foreground"
-              >
-                <EnvelopeIcon className="size-3.5" />
-              </Button>
-            </RelationRow>
+            <PersonRelationRow key={person.id} person={person} />
           ))}
         </RelationSection>
 
-        {/* The whole point of the product: the number on the right is the
-            revenue waiting on this request, not a vote count. */}
         <RelationSection
           title="Feedback"
           suffix="Ranking"
@@ -121,23 +120,80 @@ export function CompanyRelations({
           onAdd={() => undefined}
           empty="No feedback yet. Ready to add?"
         >
-          {company.feedback.map((item) => {
-            const status = feedbackStatusText[item.status];
-            return (
-              <RelationRow key={item.id}>
-                <status.icon
-                  className={`size-4 shrink-0 ${toneText[status.tone]}`}
-                  aria-label={status.label}
-                />
-                <span className="truncate">{item.title}</span>
-                <span className="ml-auto shrink-0 font-medium tabular-nums">
-                  {item.dealValue === 0 ? "—" : formatMoney(item.dealValue)}
-                </span>
-              </RelationRow>
-            );
-          })}
+          {company.feedback.map((item) => (
+            <FeedbackRelationRow key={item.id} item={item} />
+          ))}
         </RelationSection>
       </div>
     </div>
+  );
+}
+
+/**
+ * The same relations in the drawer, as collapsible sections rather than a grid.
+ *
+ * `PanelSection`, not `RelationSection`: in one narrow column the fields and
+ * the relations sit end to end, and two section idioms stacked on each other
+ * read as two systems bolted together.
+ */
+export function CompanyPanelRelations({
+  company,
+  now,
+}: {
+  company: CompanyListRow;
+  now: Date;
+}) {
+  return (
+    <>
+      <PanelSection
+        id="company-deals"
+        title="Deals"
+        icon={Squares2X2Icon}
+        count={company.deals.length}
+        onAdd={() => undefined}
+      >
+        {company.deals.length === 0 ? (
+          <RelationEmpty>No deals yet. Ready to add?</RelationEmpty>
+        ) : (
+          company.deals.map((deal) => (
+            <DealRelationRow key={deal.id} deal={deal} now={now} />
+          ))
+        )}
+      </PanelSection>
+
+      <PanelSection
+        id="company-people"
+        title="People"
+        icon={UsersIcon}
+        count={company.people.length}
+        onAdd={() => undefined}
+      >
+        {company.people.length === 0 ? (
+          <RelationEmpty>
+            Nobody here yet. Add the person you spoke to.
+          </RelationEmpty>
+        ) : (
+          company.people.map((person) => (
+            <PersonRelationRow key={person.id} person={person} />
+          ))
+        )}
+      </PanelSection>
+
+      <PanelSection
+        id="company-feedback"
+        title="Feedback"
+        icon={ChatBubbleLeftRightIcon}
+        count={company.feedback.length}
+        onAdd={() => undefined}
+      >
+        {company.feedback.length === 0 ? (
+          <RelationEmpty>No feedback yet. Ready to add?</RelationEmpty>
+        ) : (
+          company.feedback.map((item) => (
+            <FeedbackRelationRow key={item.id} item={item} />
+          ))
+        )}
+      </PanelSection>
+    </>
   );
 }

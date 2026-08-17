@@ -278,9 +278,9 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### Records — Companies, People, Activity
 
-- [X] App shell layout with collapsible sidebar sections **MVP**
-- [X] Companies list view with filters **MVP**
-- [X] Company record page with properties panel **MVP**
+- [x] App shell layout with collapsible sidebar sections **MVP**
+- [x] Companies list view with filters **MVP**
+- [x] Company record page with properties panel **MVP**
 - [x] People list view and person record page **MVP**
 - [ ] Unified activity timeline mixing system events and user notes **MVP**
 - [ ] Rich text note editor with bullets, mentions and link detection **MVP**

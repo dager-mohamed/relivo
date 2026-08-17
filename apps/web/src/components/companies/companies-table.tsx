@@ -24,6 +24,8 @@ export function CompaniesTable({
   filters,
   locations,
   filtered,
+  openId,
+  onOpenChange,
   onFiltersChange,
   onClearFilters,
   onEdit,
@@ -32,18 +34,23 @@ export function CompaniesTable({
   filters: CompanyFilters;
   locations: string[];
   filtered: boolean;
+  /**
+   * The id, not the row: an edit must reach the open drawer, and a snapshot
+   * taken at open time would go stale the moment a field changes.
+   *
+   * Controlled by the list, which also opens it on a record it just created.
+   */
+  openId: string | null;
+  onOpenChange: (id: string | null) => void;
   onFiltersChange: (filters: CompanyFilters) => void;
   onClearFilters: () => void;
   onEdit: (id: string, patch: CompanyPatch) => void;
 }) {
-  // The id, not the row: an edit must reach the open drawer, and a snapshot
-  // taken at open time would go stale the moment a field changes.
-  const [openId, setOpenId] = React.useState<string | null>(null);
   const open = openId ? (rows.find((row) => row.id === openId) ?? null) : null;
 
   const columns = React.useMemo(
-    () => createCompanyColumns((company) => setOpenId(company.id)),
-    [],
+    () => createCompanyColumns((company) => onOpenChange(company.id)),
+    [onOpenChange],
   );
 
   const table = useAppTable({
@@ -104,7 +111,7 @@ export function CompaniesTable({
 
       <CompanyDrawer
         company={open}
-        onClose={() => setOpenId(null)}
+        onClose={() => onOpenChange(null)}
         onEdit={onEdit}
       />
     </table.AppTable>

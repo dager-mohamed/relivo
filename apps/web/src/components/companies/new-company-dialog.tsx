@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   BanknotesIcon,
   DocumentTextIcon,
@@ -50,10 +50,14 @@ export function NewCompanyDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   existing: readonly CompanyListRow[];
-  /** Returns the new record's id, which is where we go next. */
-  onCreate: (draft: CompanyDraft) => string;
+  /**
+   * `createMore` rides along because what happens after a create depends on
+   * it, and the list is what knows: show the new record, or stay out of the
+   * way because the dialog is still up. Either way the dialog does not decide
+   * — a create form has no business knowing the app has routes.
+   */
+  onCreate: (draft: CompanyDraft, createMore: boolean) => void;
 }) {
-  const navigate = useNavigate();
   const [draft, setDraft] = React.useState<CompanyDraft>(emptyCompanyDraft);
   const domainRef = React.useRef<HTMLInputElement>(null);
 
@@ -68,13 +72,7 @@ export function NewCompanyDialog({
   const submit = (createMore: boolean) => {
     if (status.kind !== "ready") return false;
 
-    const id = onCreate({ ...draft, domain: status.domain });
-    if (createMore) return true;
-
-    // Not back to the list: it sorts by pipeline value, so a company with no
-    // deals yet lands near the bottom and closing the dialog would look like
-    // nothing happened. The record you just made is the confirmation.
-    void navigate({ to: "/companies/$companyId", params: { companyId: id } });
+    onCreate({ ...draft, domain: status.domain }, createMore);
     return true;
   };
 

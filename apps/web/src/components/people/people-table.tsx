@@ -24,6 +24,8 @@ export function PeopleTable({
   filters,
   companies,
   filtered,
+  openId,
+  onOpenChange,
   onFiltersChange,
   onClearFilters,
   onEdit,
@@ -32,18 +34,18 @@ export function PeopleTable({
   filters: PersonFilters;
   companies: { id: string; name: string }[];
   filtered: boolean;
+  /** See `CompaniesTable` — controlled so a fresh record can open itself. */
+  openId: string | null;
+  onOpenChange: (id: string | null) => void;
   onFiltersChange: (filters: PersonFilters) => void;
   onClearFilters: () => void;
   onEdit: (id: string, patch: PersonPatch) => void;
 }) {
-  // The id, not the row: an edit must reach the open drawer, and a snapshot
-  // taken at open time would go stale the moment a field changes.
-  const [openId, setOpenId] = React.useState<string | null>(null);
   const open = openId ? (rows.find((row) => row.id === openId) ?? null) : null;
 
   const columns = React.useMemo(
-    () => createPersonColumns((person) => setOpenId(person.id)),
-    [],
+    () => createPersonColumns((person) => onOpenChange(person.id)),
+    [onOpenChange],
   );
 
   const table = useAppTable({
@@ -104,7 +106,7 @@ export function PeopleTable({
 
       <PersonDrawer
         person={open}
-        onClose={() => setOpenId(null)}
+        onClose={() => onOpenChange(null)}
         onEdit={onEdit}
       />
     </table.AppTable>

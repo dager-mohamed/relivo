@@ -19,8 +19,8 @@ import {
 } from "@repo/ui/components/dropdown-menu";
 
 import { PersonHeader } from "#/components/people/person-header";
-import { PersonPanel } from "#/components/people/person-panel";
 import type { PersonPatch } from "#/components/people/person-properties";
+import { PersonRecord } from "#/components/people/person-record";
 import { EmptyState } from "#/components/empty-state";
 import { PageShell } from "#/components/page-shell";
 import { now, personFeed } from "#/mocks/person-activity";
@@ -139,7 +139,7 @@ function PersonPage() {
         </>
       }
     >
-      <PersonPanel
+      <PersonRecord
         key={person.id}
         person={person}
         header={

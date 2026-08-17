@@ -28,6 +28,7 @@ function PeoplePage() {
   // invalidation replaces exactly this state and nothing else.
   const [all, setAll] = React.useState(personRows);
   const [creating, setCreating] = React.useState(false);
+  const [openId, setOpenId] = React.useState<string | null>(null);
   const [filters, setFilters] =
     React.useState<PersonFilters>(emptyPersonFilters);
 
@@ -43,11 +44,15 @@ function PeoplePage() {
   // Re-read rather than prepend: `addPersonRow` has already filed the row, and
   // state holds a reference to that same array — prepending it again puts the
   // row in twice, under one key. A fresh copy is what makes React re-render.
-  const handleCreate = React.useCallback((person: NewPerson) => {
-    const row = addPersonRow(person);
-    setAll([...personRows]);
-    return row.id;
-  }, []);
+  const handleCreate = React.useCallback(
+    (person: NewPerson, createMore: boolean) => {
+      const row = addPersonRow(person);
+      setAll([...personRows]);
+      // The drawer rather than the record page — see the companies list.
+      if (!createMore) setOpenId(row.id);
+    },
+    [],
+  );
 
   return (
     <PageShell
@@ -65,6 +70,8 @@ function PeoplePage() {
         filters={filters}
         companies={companies}
         filtered={isFiltered(filters)}
+        openId={openId}
+        onOpenChange={setOpenId}
         onFiltersChange={setFilters}
         onClearFilters={() => setFilters(emptyPersonFilters)}
         onEdit={handleEdit}

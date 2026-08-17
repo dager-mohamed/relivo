@@ -27,6 +27,7 @@ function CompaniesPage() {
   // invalidation replaces exactly this state and nothing else.
   const [all, setAll] = React.useState(companyRows);
   const [creating, setCreating] = React.useState(false);
+  const [openId, setOpenId] = React.useState<string | null>(null);
   const [filters, setFilters] =
     React.useState<CompanyFilters>(emptyCompanyFilters);
 
@@ -45,11 +46,21 @@ function CompaniesPage() {
   // Re-read rather than prepend: `addCompanyRow` has already filed the row, and
   // state holds a reference to that same array — prepending it again puts the
   // row in twice, under one key. A fresh copy is what makes React re-render.
-  const handleCreate = React.useCallback((draft: CompanyDraft) => {
-    const row = addCompanyRow(draft);
-    setAll([...companyRows]);
-    return row.id;
-  }, []);
+  const handleCreate = React.useCallback(
+    (draft: CompanyDraft, createMore: boolean) => {
+      const row = addCompanyRow(draft);
+      setAll([...companyRows]);
+
+      // The drawer, not the record page: you were building a list and should
+      // still be on it. It also solves what the old redirect was working
+      // around — this list sorts by pipeline value, so a company with no deals
+      // lands near the bottom and closing the dialog looked like nothing had
+      // happened. With "Create more" on, the dialog is still up and a drawer
+      // behind it would only be in the way.
+      if (!createMore) setOpenId(row.id);
+    },
+    [],
+  );
 
   return (
     <PageShell
@@ -67,6 +78,8 @@ function CompaniesPage() {
         filters={filters}
         locations={locations}
         filtered={isFiltered(filters)}
+        openId={openId}
+        onOpenChange={setOpenId}
         onFiltersChange={setFilters}
         onClearFilters={() => setFilters(emptyCompanyFilters)}
         onEdit={handleEdit}

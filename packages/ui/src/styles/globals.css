@@ -105,6 +105,10 @@
   --sidebar-accent-foreground: oklch(0.204 0.009 60);
   --sidebar-border: oklch(0.885 0.008 75);
   --sidebar-ring: oklch(0.52 0.008 70);
+  /* Ink, not a grey: a neutral thumb goes cold against paper. Deliberately a
+     step stronger than --border — a border is only read, a thumb is grabbed. */
+  --scrollbar-thumb: oklch(0.204 0.009 60 / 20%);
+  --scrollbar-thumb-hover: oklch(0.204 0.009 60 / 35%);
 }
 
 .dark {
@@ -145,6 +149,8 @@
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.686 0.005 258);
+  --scrollbar-thumb: oklch(1 0 0 / 16%);
+  --scrollbar-thumb-hover: oklch(1 0 0 / 28%);
 }
 
 @layer base {
@@ -164,5 +170,38 @@
   h2,
   h3 {
     letter-spacing: -0.02em;
+  }
+
+  /* The default scrollbar is chrome the OS drew, and it lands on a dark panel
+     as a bright foreign object. Overlay instead: no track at all, and a pill
+     inset from the edge by its own transparent border — `background-clip`
+     is what keeps the border from being painted, so the 10px gutter carries a
+     4px thumb that floats rather than filling a channel. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-color: var(--scrollbar-thumb);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  /* Firefox only. Chrome 121+ honours these too, but setting them switches it
+     back to the standard renderer, which discards the pill above — so they are
+     guarded rather than declared alongside. */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
   }
 }

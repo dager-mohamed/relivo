@@ -39,11 +39,15 @@ export function RecordDrawer({
       <SheetContent
         side="right"
         showCloseButton={false}
-        // Must match SheetContent's own variant chain. It caps width with
-        // `data-[side=right]:sm:max-w-sm`; a plain `sm:max-w-*` is a different
-        // chain, so tailwind-merge keeps both and the attribute-scoped rule
-        // wins on specificity — which pinned this at 384px.
-        className="flex w-full flex-col gap-0 p-0 data-[side=right]:sm:max-w-5xl"
+        // ~403px at 1920, which is the width a fields column wants; the floor
+        // stops it crushing on a laptop and the ceiling stops it sprawling on
+        // a 4K display, where 21vw would be over 500.
+        //
+        // Both utilities must stay in the `data-[side=right]:` chain to match
+        // SheetContent's own `w-3/4` and `sm:max-w-sm`. A plain `w-*` is a
+        // different chain, so tailwind-merge keeps both and the
+        // attribute-scoped rule wins on specificity.
+        className="flex flex-col gap-0 p-0 data-[side=right]:w-[min(100vw,clamp(22.5rem,21vw,30rem))] data-[side=right]:sm:max-w-none"
       >
         {open ? (
           <>
