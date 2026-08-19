@@ -1,4 +1,4 @@
-import type { ActivityAction } from "@repo/schema";
+import type { ActivityAction, NoteDoc } from "@repo/schema";
 
 import {
   feedDraftNote,
@@ -82,7 +82,10 @@ export function personFeed(person: PersonListRow): FeedItem[] {
   return newestFirst(items);
 }
 
-export function draftNote(person: PersonListRow, body: string): FeedItem {
+export function draftNote(
+  person: PersonListRow,
+  body: string | NoteDoc,
+): FeedItem {
   return feedDraftNote({ kind: "person", id: person.id }, body);
 }
 

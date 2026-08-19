@@ -9,6 +9,7 @@ export { activityActionText } from "./activity";
 export { dealStageTypeText } from "./deal";
 export { feedbackStatusText } from "./feedback";
 export { nextStepSourceText } from "./next-step";
+export { noteEditorProse, noteHeadingClass, safeNoteHref } from "./note";
 export {
   detectPlatform,
   normalizeSocialUrl,

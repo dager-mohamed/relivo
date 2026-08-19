@@ -1,6 +1,8 @@
 import * as React from "react";
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
+import type { NoteDoc } from "@repo/schema";
+
 import type { CompanyPatch } from "#/components/companies/company-properties";
 import { CompanyProperties } from "#/components/companies/company-properties";
 import { CompanyPanelRelations } from "#/components/companies/company-relations";
@@ -36,7 +38,7 @@ export function CompanyPanel({
   );
 
   const notes = feed.filter((item) => item.kind === "note");
-  const addNote = (body: string) =>
+  const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(company, body), ...current]);
 
   return (
@@ -65,7 +67,7 @@ export function CompanyPanel({
               description="Write down what was said on a call and it stays attached to this company."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} notes="full" />
+            <ActivityFeed items={notes} now={now} />
           )}
         </>
       }

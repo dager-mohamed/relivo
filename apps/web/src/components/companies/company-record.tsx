@@ -9,6 +9,8 @@ import {
   TabsTrigger,
 } from "@repo/ui/components/tabs";
 
+import type { NoteDoc } from "@repo/schema";
+
 import { CompanyHeader } from "#/components/companies/company-header";
 import {
   CompanyProperties,
@@ -49,7 +51,7 @@ export function CompanyRecord({
   );
 
   const notes = feed.filter((item) => item.kind === "note");
-  const addNote = (body: string) =>
+  const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(company, body), ...current]);
 
   return (
@@ -103,7 +105,7 @@ export function CompanyRecord({
                 View all
               </Button>
             </div>
-            <ActivityFeed items={feed.slice(0, 3)} now={now} />
+            <ActivityFeed items={feed.slice(0, 3)} now={now} anchor={false} />
           </section>
         </TabsContent>
 
@@ -121,7 +123,7 @@ export function CompanyRecord({
               description="Write down what was said on a call and it stays attached to this company."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} notes="full" />
+            <ActivityFeed items={notes} now={now} />
           )}
         </TabsContent>
       </Tabs>

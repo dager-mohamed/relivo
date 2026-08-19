@@ -1,12 +1,18 @@
-import type { ActivityAction } from "@repo/schema";
+import type { ActivityAction, NoteDoc } from "@repo/schema";
 
 import type { CompanyListRow } from "./company-rows";
 import {
+  bold,
+  bullets,
+  doc,
   feedDraftNote,
   feedEvent,
   feedNote,
+  item,
+  link,
   newestFirst,
   now,
+  para,
   type FeedItem,
   type FeedOwner,
 } from "./feed";
@@ -98,6 +104,39 @@ export function companyFeed(company: CompanyListRow): FeedItem[] {
     );
   }
 
+  // Structured, not prose: this is the note shape a founder actually pastes —
+  // nested bullets and a link — and it is what the renderer has to survive.
+  if (company.location) {
+    items.push(
+      feedNote(
+        owner,
+        "sites",
+        doc(
+          para(
+            "Read their press note on the ",
+            bold("CD-ROM distribution push"),
+            ". Not just a media format — it signals bigger dev assets.",
+          ),
+          bullets(
+            item(
+              para(`Corporate HQ (${company.location})`),
+              bullets(
+                item(para("PR, execs and finance")),
+                item(para("Good for high-visibility meetings")),
+              ),
+            ),
+            item(para("Engineering hub — still the centre of gravity")),
+          ),
+          para(
+            "Source: ",
+            link(`${company.domain}/press`, `https://${company.domain}/press`),
+          ),
+        ),
+        into(0.75),
+      ),
+    );
+  }
+
   // The differentiator, stated in the feed: a request with a deal behind it.
   const blocked = company.feedback[0];
   if (blocked && company.openDealCount > 0) {
@@ -128,7 +167,10 @@ function pick(company: CompanyListRow, length: number): number {
   return company.name.length % length;
 }
 
-export function draftNote(company: CompanyListRow, body: string): FeedItem {
+export function draftNote(
+  company: CompanyListRow,
+  body: string | NoteDoc,
+): FeedItem {
   return feedDraftNote({ kind: "company", id: company.id }, body);
 }
 

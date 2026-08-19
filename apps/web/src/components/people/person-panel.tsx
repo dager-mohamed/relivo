@@ -5,6 +5,8 @@ import {
   PersonProperties,
   type PersonPatch,
 } from "#/components/people/person-properties";
+import type { NoteDoc } from "@repo/schema";
+
 import { EmptyState } from "#/components/empty-state";
 import { ActivityFeed } from "#/components/record-page/activity-feed";
 import { NoteComposer } from "#/components/record-page/note-composer";
@@ -33,7 +35,7 @@ export function PersonPanel({
   const [feed, setFeed] = React.useState<FeedItem[]>(() => personFeed(person));
 
   const notes = feed.filter((item) => item.kind === "note");
-  const addNote = (body: string) =>
+  const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(person, body), ...current]);
 
   return (
@@ -55,7 +57,7 @@ export function PersonPanel({
               description="Write down what was said on a call and it stays attached to this person."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} notes="full" />
+            <ActivityFeed items={notes} now={now} />
           )}
         </>
       }

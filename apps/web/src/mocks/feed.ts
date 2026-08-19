@@ -1,5 +1,10 @@
 import type { ActivityEvent, Note, User } from "@repo/db";
-import type { ActivityAction } from "@repo/schema";
+import {
+  noteText,
+  type ActivityAction,
+  type NoteDoc,
+  type NoteNode,
+} from "@repo/schema";
 
 import { currentUser } from "./user";
 import { workspace } from "./workspace";
@@ -69,13 +74,54 @@ export function feedEvent(
   };
 }
 
+/**
+ * Note-document builders. The editor emits this shape; fixtures write it by
+ * hand, and a plain string is the common case so it gets the short path.
+ */
+export function text(value: string): NoteNode {
+  return { type: "text", text: value };
+}
+
+export function bold(value: string): NoteNode {
+  return { type: "text", text: value, marks: [{ type: "bold" }] };
+}
+
+export function link(value: string, href: string): NoteNode {
+  return {
+    type: "text",
+    text: value,
+    marks: [{ type: "link", attrs: { href } }],
+  };
+}
+
+export function para(...inline: (NoteNode | string)[]): NoteNode {
+  return {
+    type: "paragraph",
+    content: inline.map((n) => (typeof n === "string" ? text(n) : n)),
+  };
+}
+
+/** A bullet whose children are blocks — pass another `bullets()` to nest. */
+export function item(...blocks: NoteNode[]): NoteNode {
+  return { type: "listItem", content: blocks };
+}
+
+export function bullets(...items: NoteNode[]): NoteNode {
+  return { type: "bulletList", content: items };
+}
+
+export function doc(...blocks: NoteNode[]): NoteDoc {
+  return { type: "doc", content: blocks };
+}
+
 export function feedNote(
   owner: FeedOwner,
   slug: string,
-  body: string,
+  body: string | NoteDoc,
   at: Date,
 ): FeedItem {
   const id = `${owner.id}:note-${slug}`;
+  const document = typeof body === "string" ? doc(para(body)) : body;
   return {
     id,
     at,
@@ -86,9 +132,10 @@ export function feedNote(
       workspaceId: workspace.id,
       ...foreignKeys(owner),
       authorId: actor.id,
-      // The editor's own JSON in production; the feed renders `bodyText`.
-      body: { text: body },
-      bodyText: body,
+      body: document,
+      // Derived, never written by hand: `notes.bodyText` is what search and
+      // embeddings read, and it has to be the same document the feed shows.
+      bodyText: noteText(document),
       createdAt: at,
       updatedAt: at,
     },
@@ -101,7 +148,10 @@ export function feedNote(
  * "6 hours ago" against a feed anchored to `now`.
  */
 let drafts = 0;
-export function feedDraftNote(owner: FeedOwner, body: string): FeedItem {
+export function feedDraftNote(
+  owner: FeedOwner,
+  body: string | NoteDoc,
+): FeedItem {
   drafts += 1;
   return feedNote(owner, `draft-${drafts}`, body, now);
 }

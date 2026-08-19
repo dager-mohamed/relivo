@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import type { NoteDoc } from "@repo/schema";
+
 import {
   PersonProperties,
   type PersonPatch,
@@ -31,7 +33,7 @@ export function PersonRecord({
 }) {
   const [feed, setFeed] = React.useState<FeedItem[]>(() => personFeed(person));
 
-  const addNote = (body: string) =>
+  const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(person, body), ...current]);
 
   return (
