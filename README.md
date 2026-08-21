@@ -79,7 +79,11 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/dager-mohamed/relivo)
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/2349fcd6-5dae-4a1e-930a-3a8a2d3bb8e4" controls muted loop width="100%">
+    <a href="https://github.com/dager-mohamed/relivo/raw/main/packages/assets/videos/demo.mp4">Watch the demo</a>
+  </video>
+</div>
 
 You're a founder, and you're the one selling. Five to forty live deals, no sales team, nobody to keep a CRM tidy.
 
@@ -267,14 +271,14 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### Core data model
 
-- [ ] Company schema and enrichment fields **MVP**
-- [ ] Person schema and company relations **MVP**
-- [ ] Deal schema with stages, value, close date and owner **MVP**
-- [ ] Feedback schema with upvotes and deal links **MVP**
-- [ ] Next Step schema **MVP**
-- [ ] Note and Activity event schema for the unified timeline **MVP**
-- [ ] pgvector embeddings table with HNSW index migration
-- [ ] AI usage metering table for token and cost logging **MVP**
+- [x] Company schema and enrichment fields **MVP**
+- [x] Person schema and company relations **MVP**
+- [x] Deal schema with stages, value, close date and owner **MVP**
+- [x] Feedback schema with upvotes and deal links **MVP**
+- [x] Next Step schema **MVP**
+- [x] Note and Activity event schema for the unified timeline **MVP**
+- [x] pgvector embeddings table with HNSW index migration
+- [x] AI usage metering table for token and cost logging **MVP**
 
 ### Records — Companies, People, Activity
 
@@ -282,9 +286,9 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 - [x] Companies list view with filters **MVP**
 - [x] Company record page with properties panel **MVP**
 - [x] People list view and person record page **MVP**
-- [ ] Unified activity timeline mixing system events and user notes **MVP**
-- [ ] Rich text note editor with bullets, mentions and link detection **MVP**
-- [ ] Favorites sidebar with pinning and drag reorder for any record type
+- [x] Unified activity timeline mixing system events and user notes **MVP**
+- [x] Rich text note editor with bullets, mentions and link detection **MVP**
+- [x] Favorites sidebar with pinning and drag reorder for any record type
 
 ### Deals and pipeline
 
@@ -421,7 +425,6 @@ Distributed under the GNU Affero General Public License v3.0. See `LICENSE` for 
 [issues-url]: https://github.com/dager-mohamed/relivo/issues
 [license-shield]: https://img.shields.io/github/license/dager-mohamed/relivo.svg?style=for-the-badge
 [license-url]: https://github.com/dager-mohamed/relivo/blob/main/LICENSE
-[product-screenshot]: packages/assets/images/screenshot.png
 
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
 
