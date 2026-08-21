@@ -49,8 +49,10 @@ const LABEL = "text-sidebar-foreground/75";
 
 export function AppSidebar({
   defaultSections,
+  user,
 }: {
   defaultSections: SidebarSectionState;
+  user: { name: string; email: string; image?: string | null };
 }) {
   const matchRoute = useMatchRoute();
   const sections = React.useRef(defaultSections);
@@ -128,7 +130,7 @@ export function AppSidebar({
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
-        <NavUser name="Moe Amaya" />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

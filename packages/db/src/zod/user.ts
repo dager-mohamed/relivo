@@ -5,6 +5,9 @@ import { users } from "../schema";
 
 // Select only. Users are created and updated by Better Auth, not by our
 // routers, so an insert schema here would describe a path that doesn't exist.
+// Same reason there is no session.ts / account.ts / verification.ts: nothing
+// outside Better Auth reads or writes those three, and `session` reaches
+// procedures through the tRPC context, already typed.
 export const userSelect = createSelectSchema(users);
 export type UserSelect = z.infer<typeof userSelect>;
 
