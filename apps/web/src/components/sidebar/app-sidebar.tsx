@@ -11,7 +11,6 @@ import {
 
 import lockupBlack from "@repo/assets/icons/lockup-h-black.svg";
 import lockupWhite from "@repo/assets/icons/lockup-h-white.svg";
-import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +22,7 @@ import {
   SidebarMenuItem,
 } from "@repo/ui/components/sidebar";
 
+import { NavFavorites } from "#/components/sidebar/nav-favorites";
 import { NavSection } from "#/components/sidebar/nav-section";
 import { NavUser } from "#/components/sidebar/nav-user";
 import { WorkspaceSwitcher } from "#/components/sidebar/workspace-switcher";
@@ -31,8 +31,7 @@ import {
   type SidebarSection,
   type SidebarSectionState,
 } from "#/lib/sidebar/cookies";
-import { favorites, workspace, type Favorite } from "#/mocks";
-import { formatMoney } from "#/text-maps";
+import { workspace } from "#/mocks";
 
 const sales = [
   { label: "Deals", to: "/deals", icon: Squares2X2Icon },
@@ -47,7 +46,6 @@ const records = [
 
 // Four text tiers, all one hue: active item / label / value / section header.
 const LABEL = "text-sidebar-foreground/75";
-const VALUE = "text-sidebar-foreground/50";
 
 export function AppSidebar({
   defaultSections,
@@ -88,9 +86,11 @@ export function AppSidebar({
           defaultOpen={defaultSections.sales}
           onOpenChange={toggle("sales")}
         >
-          {sales.map((item) => (
-            <NavItem key={item.to} {...item} matchRoute={matchRoute} />
-          ))}
+          <SidebarMenu>
+            {sales.map((item) => (
+              <NavItem key={item.to} {...item} matchRoute={matchRoute} />
+            ))}
+          </SidebarMenu>
         </NavSection>
 
         <NavSection
@@ -98,33 +98,19 @@ export function AppSidebar({
           defaultOpen={defaultSections.records}
           onOpenChange={toggle("records")}
         >
-          {records.map((item) => (
-            <NavItem key={item.to} {...item} matchRoute={matchRoute} />
-          ))}
+          <SidebarMenu>
+            {records.map((item) => (
+              <NavItem key={item.to} {...item} matchRoute={matchRoute} />
+            ))}
+          </SidebarMenu>
         </NavSection>
 
-        {/* Below the fixed destinations: this list grows, they don't. */}
-        <NavSection
-          label="Favorites"
+        {/* Below the fixed destinations: this list grows, they don't — and it
+            brings its own header, since it disappears entirely when empty. */}
+        <NavFavorites
           defaultOpen={defaultSections.favorites}
           onOpenChange={toggle("favorites")}
-        >
-          {favorites.map((favorite) => (
-            <SidebarMenuItem key={`${favorite.kind}-${favorite.id}`}>
-              <SidebarMenuButton className={`gap-2.5 ${LABEL}`}>
-                <FavoriteIcon favorite={favorite} />
-                <span className="truncate">{favorite.label}</span>
-                {favorite.kind === "deal" && favorite.value !== null ? (
-                  <span
-                    className={`ml-auto shrink-0 text-xs tabular-nums ${VALUE}`}
-                  >
-                    {formatMoney(favorite.value)}
-                  </span>
-                ) : null}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </NavSection>
+        />
       </SidebarContent>
 
       <SidebarFooter className="gap-0 pt-0">
@@ -173,32 +159,5 @@ function NavItem({
         <span>{label}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
-  );
-}
-
-/**
- * Companies, people and deals have to be told apart at a glance in a mixed
- * list. Shape carries that, not colour: square logo, round avatar, open ring.
- */
-function FavoriteIcon({ favorite }: { favorite: Favorite }) {
-  if (favorite.kind === "deal") {
-    // Stage ring. Left neutral until it reflects a real stage — spending a
-    // semantic colour on placeholder data would make it mean nothing.
-    return (
-      <span className="flex size-4 shrink-0 items-center justify-center">
-        <span className="size-3 rounded-full border-[1.5px] border-sidebar-foreground/40 border-r-transparent" />
-      </span>
-    );
-  }
-
-  return (
-    <Avatar
-      className={`size-4 shrink-0 ${favorite.kind === "person" ? "rounded-full" : "rounded-sm"}`}
-    >
-      {/* AvatarImage lands here once enrichment fetches logos and avatars. */}
-      <AvatarFallback className="bg-sidebar-foreground/10 text-[0.5625rem] font-medium">
-        {favorite.label.slice(0, 1)}
-      </AvatarFallback>
-    </Avatar>
   );
 }

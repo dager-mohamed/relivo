@@ -1,36 +1,29 @@
-import { companies } from "./companies";
-import { deals } from "./deals";
-import { people } from "./people";
+import type { FavoriteRef } from "#/lib/favorites/cookies";
+
+import { companyRows } from "./company-rows";
+import { personRows } from "./person-rows";
 
 /**
- * Favorites hold any record type in one ordered list, so they are a view over
- * the other fixtures rather than a table of their own — the real one arrives
- * with RELIV-48.
+ * What the sidebar shows before anyone has pinned anything — a mixed list, on
+ * purpose, because the flat ordering of unlike records is the feature.
+ *
+ * References the list fixtures rather than the raw tables so the ids match the
+ * ones the record routes look up; a favourite that cannot navigate is worse
+ * than no favourite. Delete this the moment `favorites.list` exists.
  */
-export type Favorite =
-  | { kind: "company"; id: string; label: string }
-  | { kind: "person"; id: string; label: string }
-  | { kind: "deal"; id: string; label: string; value: number | null };
+const firstDeal = companyRows.find((row) => row.deals.length > 0);
+const secondDeal = companyRows.find(
+  (row) => row.deals.length > 0 && row.id !== firstDeal?.id,
+);
 
-export const favorites: Favorite[] = [
-  { kind: "company", id: companies[0]!.id, label: companies[0]!.name },
-  {
-    kind: "deal",
-    id: deals[0]!.id,
-    label: companies[1]!.name,
-    value: deals[0]!.value,
-  },
-  {
-    kind: "person",
-    id: people[1]!.id,
-    // name is nullable on people; email is the documented fallback.
-    label: people[1]!.name ?? people[1]!.email!,
-  },
-  { kind: "company", id: companies[3]!.id, label: companies[3]!.name },
-  {
-    kind: "deal",
-    id: deals[1]!.id,
-    label: companies[2]!.name,
-    value: deals[1]!.value,
-  },
-];
+export const defaultFavorites: FavoriteRef[] = [
+  companyRows[0] ? { kind: "company" as const, id: companyRows[0].id } : null,
+  firstDeal?.deals[0]
+    ? { kind: "deal" as const, id: firstDeal.deals[0].id }
+    : null,
+  personRows[1] ? { kind: "person" as const, id: personRows[1].id } : null,
+  companyRows[3] ? { kind: "company" as const, id: companyRows[3].id } : null,
+  secondDeal?.deals[0]
+    ? { kind: "deal" as const, id: secondDeal.deals[0].id }
+    : null,
+].filter((ref) => ref !== null);

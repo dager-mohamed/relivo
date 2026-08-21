@@ -22,6 +22,7 @@
     "hooks": "@repo/ui/hooks"
   },
   "registries": {
-    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json"
+    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
+    "@reui": "https://reui.io/r/{style}/{name}.json"
   }
 }

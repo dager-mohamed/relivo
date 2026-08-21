@@ -48,6 +48,7 @@ export function CompanyDrawer({
           params={{ companyId: company?.id ?? "" }}
         />
       }
+      record={company ? { kind: "company", id: company.id } : null}
     >
       {company ? (
         <CompanyPanel

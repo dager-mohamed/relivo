@@ -4,10 +4,8 @@ import {
   EllipsisHorizontalIcon,
   EnvelopeIcon,
   LinkIcon,
-  StarIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
 import { Button } from "@repo/ui/components/button";
 import {
@@ -18,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 
+import { FavoriteStar } from "#/components/favorites/favorite-star";
 import { PersonHeader } from "#/components/people/person-header";
 import type { PersonPatch } from "#/components/people/person-properties";
 import { PersonRecord } from "#/components/people/person-record";
@@ -35,7 +34,6 @@ function PersonPage() {
   // Local until `people.byId` exists, same as the list screen — a query plus
   // a mutation replaces this state and nothing else on the page.
   const [rows, setRows] = React.useState(personRows);
-  const [starred, setStarred] = React.useState(false);
 
   const person = rows.find((row) => row.id === personId);
 
@@ -95,21 +93,7 @@ function PersonPage() {
             </Button>
           ) : null}
 
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={
-              starred ? "Remove from favourites" : "Add to favourites"
-            }
-            aria-pressed={starred}
-            onClick={() => setStarred((current) => !current)}
-          >
-            {starred ? (
-              <StarIconSolid className="size-4" />
-            ) : (
-              <StarIcon className="size-4" />
-            )}
-          </Button>
+          <FavoriteStar kind="person" id={person.id} />
 
           <DropdownMenu>
             <DropdownMenuTrigger

@@ -13,4 +13,4 @@ export { workspace } from "./workspace";
 export { companies } from "./companies";
 export { people } from "./people";
 export { dealStages, deals } from "./deals";
-export { favorites, type Favorite } from "./favorites";
+export { defaultFavorites } from "./favorites";

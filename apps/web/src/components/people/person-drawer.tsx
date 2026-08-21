@@ -42,6 +42,7 @@ export function PersonDrawer({
       expandLink={
         <Link to="/people/$personId" params={{ personId: person?.id ?? "" }} />
       }
+      record={person ? { kind: "person", id: person.id } : null}
     >
       {person ? (
         <PersonPanel

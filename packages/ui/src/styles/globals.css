@@ -59,6 +59,12 @@
   --radius-2xl: 1.5rem;
   --radius-3xl: 2rem;
   --radius-4xl: 2.5rem;
+  --color-invert-foreground: var(--invert-foreground);
+  --color-invert: var(--invert);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info-foreground: var(--info-foreground);
+  --color-success-foreground: var(--success-foreground);
+  --color-destructive-foreground: var(--destructive-foreground);
 }
 
 /* Ink (#1A1613) and paper (#FAF7F2) are the brand marks' own two colours — see
@@ -109,6 +115,12 @@
      step stronger than --border — a border is only read, a thumb is grabbed. */
   --scrollbar-thumb: oklch(0.204 0.009 60 / 20%);
   --scrollbar-thumb-hover: oklch(0.204 0.009 60 / 35%);
+  --destructive-foreground: var(--color-red-800);
+  --success-foreground: var(--color-emerald-900);
+  --info-foreground: var(--color-violet-900);
+  --warning-foreground: var(--color-yellow-900);
+  --invert: var(--color-zinc-900);
+  --invert-foreground: var(--color-zinc-50);
 }
 
 .dark {
@@ -151,6 +163,12 @@
   --sidebar-ring: oklch(0.686 0.005 258);
   --scrollbar-thumb: oklch(1 0 0 / 16%);
   --scrollbar-thumb-hover: oklch(1 0 0 / 28%);
+  --destructive-foreground: var(--color-red-600);
+  --success-foreground: var(--color-emerald-600);
+  --info-foreground: var(--color-violet-600);
+  --warning-foreground: var(--color-yellow-600);
+  --invert: var(--color-zinc-700);
+  --invert-foreground: var(--color-zinc-50);
 }
 
 @layer base {

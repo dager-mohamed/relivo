@@ -9,12 +9,15 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarMenu,
 } from "@repo/ui/components/sidebar";
 
 /**
  * A sidebar group that collapses on its own. Shape follows the shadcn docs:
  * Collapsible wraps SidebarGroup, the label *is* the trigger.
+ *
+ * The `<ul>` belongs to the caller, not to this. Favourites needs the sortable
+ * container to *be* that element, and a wrapper here would leave a div inside
+ * a ul — invalid, and enough to break list semantics for a screen reader.
  */
 export function NavSection({
   label,
@@ -42,9 +45,7 @@ export function NavSection({
           <ChevronDownIcon className="ml-auto size-3! transition-transform duration-200 group-data-open/collapsible:rotate-180" />
         </SidebarGroupLabel>
         <CollapsibleContent>
-          <SidebarGroupContent>
-            <SidebarMenu>{children}</SidebarMenu>
-          </SidebarGroupContent>
+          <SidebarGroupContent>{children}</SidebarGroupContent>
         </CollapsibleContent>
       </SidebarGroup>
     </Collapsible>

@@ -1,11 +1,10 @@
-import {
-  ArrowsPointingOutIcon,
-  StarIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowsPointingOutIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import { Button } from "@repo/ui/components/button";
 import { Sheet, SheetContent } from "@repo/ui/components/sheet";
+
+import { FavoriteStar } from "#/components/favorites/favorite-star";
+import type { FavoriteKind } from "#/lib/favorites/cookies";
 
 /**
  * A record opened from a list, without leaving it. The body is whatever panel
@@ -22,6 +21,7 @@ export function RecordDrawer({
   title,
   meta,
   expandLink,
+  record,
   children,
 }: {
   open: boolean;
@@ -32,6 +32,8 @@ export function RecordDrawer({
   meta?: React.ReactNode;
   /** A bare `<Link>`; the drawer supplies the button chrome around it. */
   expandLink: React.ReactElement;
+  /** What the star pins. Null while nothing is open. */
+  record: { kind: FavoriteKind; id: string } | null;
   children: React.ReactNode;
 }) {
   return (
@@ -63,9 +65,9 @@ export function RecordDrawer({
               ) : null}
 
               <div className="ml-auto flex shrink-0 items-center gap-0.5">
-                <Button variant="ghost" size="icon-sm" aria-label="Favourite">
-                  <StarIcon className="size-4" />
-                </Button>
+                {record ? (
+                  <FavoriteStar kind={record.kind} id={record.id} />
+                ) : null}
                 <Button
                   variant="ghost"
                   size="icon-sm"

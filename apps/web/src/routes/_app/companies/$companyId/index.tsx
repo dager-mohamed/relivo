@@ -5,9 +5,7 @@ import {
   BuildingOffice2Icon,
   EllipsisHorizontalIcon,
   LinkIcon,
-  StarIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
 import { Button } from "@repo/ui/components/button";
 import {
@@ -19,6 +17,7 @@ import {
 } from "@repo/ui/components/dropdown-menu";
 
 import { CompanyRecord } from "#/components/companies/company-record";
+import { FavoriteStar } from "#/components/favorites/favorite-star";
 import type { CompanyPatch } from "#/components/companies/company-properties";
 import { EmptyState } from "#/components/empty-state";
 import { PageShell } from "#/components/page-shell";
@@ -33,7 +32,6 @@ function CompanyPage() {
   // Local until `companies.byId` exists, same as the list screen — a query
   // plus a mutation replaces this state and nothing else on the page.
   const [rows, setRows] = React.useState(companyRows);
-  const [starred, setStarred] = React.useState(false);
 
   const company = rows.find((row) => row.id === companyId);
 
@@ -79,21 +77,7 @@ function CompanyPage() {
       bleed
       actions={
         <>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={
-              starred ? "Remove from favourites" : "Add to favourites"
-            }
-            aria-pressed={starred}
-            onClick={() => setStarred((current) => !current)}
-          >
-            {starred ? (
-              <StarIconSolid className="size-4" />
-            ) : (
-              <StarIcon className="size-4" />
-            )}
-          </Button>
+          <FavoriteStar kind="company" id={company.id} />
 
           <DropdownMenu>
             <DropdownMenuTrigger
