@@ -271,14 +271,14 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### Core data model
 
-- [ ] Company schema and enrichment fields **MVP**
-- [ ] Person schema and company relations **MVP**
-- [ ] Deal schema with stages, value, close date and owner **MVP**
-- [ ] Feedback schema with upvotes and deal links **MVP**
-- [ ] Next Step schema **MVP**
-- [ ] Note and Activity event schema for the unified timeline **MVP**
-- [ ] pgvector embeddings table with HNSW index migration
-- [ ] AI usage metering table for token and cost logging **MVP**
+- [x] Company schema and enrichment fields **MVP**
+- [x] Person schema and company relations **MVP**
+- [x] Deal schema with stages, value, close date and owner **MVP**
+- [x] Feedback schema with upvotes and deal links **MVP**
+- [x] Next Step schema **MVP**
+- [x] Note and Activity event schema for the unified timeline **MVP**
+- [x] pgvector embeddings table with HNSW index migration
+- [x] AI usage metering table for token and cost logging **MVP**
 
 ### Records — Companies, People, Activity
 
@@ -286,9 +286,9 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 - [x] Companies list view with filters **MVP**
 - [x] Company record page with properties panel **MVP**
 - [x] People list view and person record page **MVP**
-- [ ] Unified activity timeline mixing system events and user notes **MVP**
-- [ ] Rich text note editor with bullets, mentions and link detection **MVP**
-- [ ] Favorites sidebar with pinning and drag reorder for any record type
+- [x] Unified activity timeline mixing system events and user notes **MVP**
+- [x] Rich text note editor with bullets, mentions and link detection **MVP**
+- [x] Favorites sidebar with pinning and drag reorder for any record type
 
 ### Deals and pipeline
 
