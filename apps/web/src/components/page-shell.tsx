@@ -1,0 +1,87 @@
+import { Link, type LinkProps } from "@tanstack/react-router";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@repo/ui/components/breadcrumb";
+import { SidebarTrigger } from "@repo/ui/components/sidebar";
+import { cn } from "@repo/ui/lib/utils";
+
+/**
+ * The frame every page sits in, and the one header bar every list screen
+ * reuses: icon, title and filter control on the left, primary action right.
+ *
+ * Sticky and hairline-separated because content scrolls underneath — without
+ * the rule the first row collides with the title.
+ */
+export function PageShell({
+  title,
+  icon: Icon,
+  parent,
+  actions,
+  bleed = false,
+  children,
+}: {
+  title: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  /** Record pages sit under their list — "Companies / Atari". */
+  parent?: { label: string; to: LinkProps["to"] };
+  actions?: React.ReactNode;
+  /** Drop the content gutter, for pages that own their own edges. */
+  bleed?: boolean;
+  children?: React.ReactNode;
+}) {
+  return (
+    <>
+      <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center gap-2 border-b border-border bg-background px-4 md:px-6">
+        {/* Below md the sidebar is an off-canvas sheet with no other way in. */}
+        <SidebarTrigger className="-ml-1 md:hidden" />
+
+        {Icon ? (
+          <Icon className="size-4 shrink-0 text-muted-foreground" />
+        ) : null}
+
+        {parent ? (
+          <Breadcrumb className="min-w-0">
+            <BreadcrumbList className="flex-nowrap">
+              <BreadcrumbItem>
+                <BreadcrumbLink render={<Link to={parent.to} />}>
+                  {parent.label}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem className="min-w-0">
+                <BreadcrumbPage className="truncate font-medium text-foreground">
+                  {title}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        ) : (
+          <h1 className="truncate font-heading text-base font-semibold">
+            {title}
+          </h1>
+        )}
+
+        {actions ? (
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            {actions}
+          </div>
+        ) : null}
+      </header>
+
+      <div
+        className={cn(
+          "flex min-h-0 flex-1 flex-col",
+          !bleed && "px-4 py-5 md:px-6",
+        )}
+      >
+        {children}
+      </div>
+    </>
+  );
+}

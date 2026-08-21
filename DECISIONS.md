@@ -118,11 +118,33 @@ Made while building, not planned in advance. Recorded because each one is invisi
 
 **Consequence:** Components are built on `@base-ui/react`, not Radix. Nearly all shadcn material online is Radix-based and will not drop in. The preset also ships components with no Radix equivalent (`attachment`, `bubble`, `message`, `questionnaire`, `marker`).
 
+### The Nova preset's font and palette are overridden, the components are not
+
+`packages/ui/src/styles/globals.css` replaces Geist with Inter and the neutral greyscale with the brand's own two colours: ink `#1A1613` and paper `#FAF7F2`, both already fixed by `packages/assets/README.md` ("Don't — recolour outside ink `#1A1613` and white"). Secondary text is `#989A9D`. Everything else derives from those.
+
+**Why:** Neutral grey is the shadcn default, not a choice. The marks were already ink-on-paper, so the app matching them costs nothing but token values — no component was touched.
+
+**Consequence:** `#989A9D` is faintly _cool_ (hue ~258) against a warm background. That mismatch is deliberate, copied from the reference rather than "corrected" — it keeps secondary text from looking sepia.
+
+**Radii are pinned, not derived.** The scale was `0.6× / 0.8× / 1.0×` of `--radius`, which cannot land on the three sizes we design to (8/12/16px) from any single base. `--radius-sm…4xl` are now literal. The three sizes map to `md` / `lg` / `xl` because that is how Nova spends them: `md` on menu items, `lg` on buttons, inputs and popovers, `xl` on cards, dialogs and the command palette. `--radius` itself stays — components use it directly in `calc()` for small elements.
+
+### Colour encodes record state, and nothing else
+
+Chrome is built from ink, paper and white alone — including `--primary`, which stays near-white on dark rather than taking a brand hue. The only chromatic tokens are `--info`, `--warning`, `--success` and `--destructive`, plus `--muted-foreground` as the neutral. `--chart-1…5` are drawn from the same five so charts and badges cannot drift apart.
+
+**Why:** The brand book forbids recolouring outside ink and white, so a chromatic primary was never available. That constraint turns out to be the right product answer anyway: PRODUCT.md has five deal stages, four feedback statuses and four next-step urgency buckets, and a pure greyscale cannot express any of them. Reserving colour for state means the only thing that catches the eye on a dense screen is the state itself.
+
+**Five treatments cover all three vocabularies:** neutral (Qualified · Backlog · Later), info (Demo · Planned · This week), warning (Proposal · In progress · Today), success (Closed Won · shipped), destructive (Closed Lost · Overdue).
+
+**Rejected:** a brand accent applied to primary buttons. It would contradict the asset guidelines, and it would compete with the state colours for attention on exactly the screens where state matters most.
+
+**Inter ships as the `opsz` build** (`@fontsource-variable/inter/opsz.css`), not the default `wght`-only one, so `font-optical-sizing: auto` can reach Inter Display at large sizes. Same family name (`Inter Variable`) either way. Global `letter-spacing: -0.15px` is set on `html` in the base layer.
+
 ### The shadcn CLI runs from `packages/ui`, not `apps/web`
 
 **Why:** It works. `cd packages/ui && pnpm dlx shadcn@latest add <component>` reads that package's `components.json` and writes to `packages/ui/src/components/`. ~61 components were installed this way.
 
-`apps/web` has no `components.json` and does not need one, because it does not currently consume `@repo/ui`.
+`apps/web` has no `components.json` and does not need one: it consumes `@repo/ui` through the exports map and never runs the CLI itself.
 
 **Note:** This contradicts advice that the CLI fails inside a non-framework package at "Verifying framework." That was not observed with shadcn 4.x. Revisit only if a CLI upgrade actually breaks it.
 

@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.3.0",
+    "@heroicons/react": "^2.2.0",
     "@repo/api": "workspace:^",
     "@repo/assets": "workspace:^",
     "@repo/ui": "workspace:*",
@@ -41,7 +42,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@repo/db": "workspace:*",
     "@repo/eslint-config": "workspace:^",
+    "@repo/schema": "workspace:*",
     "@repo/typescript-config": "workspace:^",
     "@tanstack/devtools-event-client": "latest",
     "@tanstack/devtools-vite": "latest",

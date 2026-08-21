@@ -1,4 +1,4 @@
-import type { ActivityAction } from "@repo/schema";
+import type { ActivityAction, NoteDoc } from "@repo/schema";
 import { sql } from "drizzle-orm";
 import { check, index, jsonb, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
@@ -46,7 +46,7 @@ export const notes = pgTable(
       onDelete: "set null",
     }),
     // The editor's own JSON, so rich text round-trips without loss.
-    body: jsonb("body").notNull(),
+    body: jsonb("body").$type<NoteDoc>().notNull(),
     // Flattened plain text for tsvector search and embedding chunking,
     // neither of which can extract text from body in SQL.
     bodyText: text("body_text").notNull(),

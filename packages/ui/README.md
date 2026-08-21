@@ -1,8 +1,9 @@
 # `@repo/ui`
 
 shadcn/ui component library for the monorepo. Built on **Base UI** primitives
-(`base-nova` preset, `neutral` base color, Lucide icons, Geist font) with
-Tailwind v4.
+(`base-nova` preset, `neutral` base color, Lucide icons) with Tailwind v4.
+The preset's Geist font and neutral palette are overridden in `globals.css` —
+see DECISIONS.md.
 
 Source-only package — there is no build step. Consumers import `.tsx`/`.ts`
 directly through the `exports` map and compile it themselves.

@@ -1,3 +1,4 @@
+import { isPhone, phoneMessage } from "@repo/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -6,7 +7,9 @@ import { people } from "../schema";
 const personInsertBase = createInsertSchema(people, {
   name: (s) => s.trim().min(1).max(200),
   email: z.email().toLowerCase().nullish(),
-  phone: (s) => s.trim().max(50),
+  // Callback form, so the generated nullability survives — a bare schema here
+  // would replace it. Clearing a phone means null, never "".
+  phone: (s) => s.trim().max(50).refine(isPhone, phoneMessage),
   role: (s) => s.trim().max(200),
   avatarUrl: z.url().nullish(),
 }).omit({ id: true, createdAt: true, updatedAt: true });

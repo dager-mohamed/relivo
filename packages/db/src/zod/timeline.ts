@@ -1,4 +1,4 @@
-import { activityAction } from "@repo/schema";
+import { activityAction, noteDoc } from "@repo/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -14,11 +14,11 @@ const hasOneSubject = (v: {
 
 const oneSubjectMessage = "Attach to exactly one company, deal or person";
 
-// Loose on purpose — the note editor task picks the concrete document shape.
-const noteBody = z.record(z.string(), z.unknown());
-
 const noteInsertBase = createInsertSchema(notes, {
-  body: noteBody,
+  // The editor's own JSON — see `noteDoc`. `bodyText` is its flattening, and
+  // `noteText` is what must produce it, or search indexes a different document
+  // than the one on screen.
+  body: noteDoc,
   bodyText: (s) => s.max(100_000),
 }).omit({ id: true, createdAt: true, updatedAt: true });
 
