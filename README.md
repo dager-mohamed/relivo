@@ -64,6 +64,7 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#google-sign-in">Google sign-in</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -167,21 +168,55 @@ Relivo is a Turborepo monorepo. Everything runs locally: a Postgres container wi
    ```sh
    cp .env.example .env
    ```
-4. Start Postgres and Redis
+4. Fill in the auth variables in `.env` — see [Google sign-in](#google-sign-in) below
+   ```sh
+   # a 32-character minimum secret; this prints one
+   openssl rand -base64 32
+   ```
+5. Start Postgres and Redis
    ```sh
    docker compose up -d
    ```
-5. Create the schema and insert a sample row
+6. Create the schema and insert a sample row
    ```sh
    pnpm --filter @repo/db db:migrate
    pnpm --filter @repo/db db:seed
    ```
-6. Start the app and the job worker together
+7. Start the app and the job worker together
    ```sh
    pnpm dev
    ```
 
 The app runs on [http://localhost:3000](http://localhost:3000). Postgres is published on host port **5434** and Redis on **6379** — the Postgres port is deliberately not 5432, to avoid colliding with a local install.
+
+### Google sign-in
+
+Google OAuth is currently the only way to sign in. Without credentials the app still starts, but the sign-in page has nothing to offer, so set these up before `pnpm dev`.
+
+1. Open the [Google Cloud console](https://console.cloud.google.com/apis/credentials) and select a project, or create one.
+2. Configure the **OAuth consent screen**: type _External_, an app name, and your own address for the support and developer contact fields. While the app is unpublished, add yourself under **Test users** — Google blocks everyone else.
+3. Go to **Credentials → Create credentials → OAuth client ID**, and choose **Web application**.
+4. Under **Authorised redirect URIs** add exactly:
+   ```text
+   http://localhost:3000/api/auth/callback/google
+   ```
+   Deployments add their own origin with the same `/api/auth/callback/google` path. A mismatch here is what produces Google's `redirect_uri_mismatch` error.
+5. Copy the client ID and client secret into `.env`:
+   ```sh
+   GOOGLE_CLIENT_ID=<client id>.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=<client secret>
+   ```
+
+`.env` is read at server start, so restart `pnpm dev` after editing it. The full variable list, with comments, is in [.env.example](.env.example).
+
+| Variable               | Required | What it is                                                                         |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `DATABASE_URL`         | yes      | Postgres connection string; matches `docker-compose.yml`                           |
+| `REDIS_URL`            | yes      | Redis connection string for the BullMQ queue                                       |
+| `BETTER_AUTH_SECRET`   | yes      | Signs and encrypts sessions, 32 characters minimum. Changing it signs everyone out |
+| `BETTER_AUTH_URL`      | yes      | The app's own origin — `http://localhost:3000` in development                      |
+| `GOOGLE_CLIENT_ID`     | no       | From the steps above. Set both Google values or neither                            |
+| `GOOGLE_CLIENT_SECRET` | no       | From the steps above                                                               |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -263,7 +298,8 @@ Everything else tagged MVP exists to make those four usable. Everything untagged
 
 ### Auth, workspaces and members
 
-- [ ] Email and OAuth authentication **MVP**
+- [x] Google OAuth authentication **MVP**
+- [ ] Email and password authentication **MVP**
 - [ ] Workspace model and multi-workspace switching **MVP**
 - [ ] Member invites and roles
 - [ ] Workspace-scoped tRPC middleware and row-level access checks **MVP**

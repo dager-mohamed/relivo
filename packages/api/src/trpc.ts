@@ -1,4 +1,4 @@
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 
 import type { Context } from "./context";
@@ -13,3 +13,16 @@ const t = initTRPC.context<Context>().create({
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const publicProcedure = t.procedure;
+
+// Everything that touches workspace data should end up here. The routers are
+// still public while RELIV-32 (workspace-scoped middleware) is outstanding —
+// that task extends this middleware with the workspace lookup rather than
+// adding a second one.
+export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  // Re-passing session is what narrows it to non-null downstream.
+  return next({ ctx: { session: ctx.session } });
+});
