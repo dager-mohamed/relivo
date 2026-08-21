@@ -41,7 +41,7 @@ type MentionMenuProps = {
 const MentionMenu = ({ items, command }: MentionMenuProps) => (
   <Command
     id={MENU_ID}
-    className="w-64 border shadow"
+    className="w-56 shadow-popover"
     // We already searched; cmdk filtering again would re-rank against its own
     // notion of a match and drop rows the caller deliberately returned.
     shouldFilter={false}
@@ -49,7 +49,7 @@ const MentionMenu = ({ items, command }: MentionMenuProps) => (
       event.stopPropagation();
     }}
   >
-    <CommandEmpty className="p-3 text-sm text-muted-foreground">
+    <CommandEmpty className="px-2 py-3 text-[0.8125rem] text-muted-foreground">
       No matches
     </CommandEmpty>
     <CommandList>
