@@ -130,6 +130,7 @@ const SlashPluginKey = new PluginKey("slash");
 
 export type SuggestionItem = {
   title: string;
+  /** Searched, not shown — it is what makes "/snippet" find Code. */
   description: string;
   icon: LucideIcon;
   searchTerms: string[];
@@ -153,7 +154,7 @@ export const defaultSlashSuggestions: SuggestionOptions<SuggestionItem>["items"]
       },
     },
     {
-      title: "To-do List",
+      title: "To-do list",
       description: "Track tasks with a to-do list.",
       searchTerms: ["todo", "task", "list", "check", "checkbox"],
       icon: CheckSquareIcon,
@@ -209,7 +210,7 @@ export const defaultSlashSuggestions: SuggestionOptions<SuggestionItem>["items"]
       },
     },
     {
-      title: "Bullet List",
+      title: "Bullet list",
       description: "Create a simple bullet list.",
       searchTerms: ["unordered", "point"],
       icon: ListIcon,
@@ -218,7 +219,7 @@ export const defaultSlashSuggestions: SuggestionOptions<SuggestionItem>["items"]
       },
     },
     {
-      title: "Numbered List",
+      title: "Numbered list",
       description: "Create a list with numbering.",
       searchTerms: ["ordered"],
       icon: ListOrderedIcon,
@@ -444,33 +445,30 @@ type EditorSlashMenuProps = {
 // React prop that updated one keystroke ago, and running it is what tells the
 // plugin the suggestion is over. Calling the item straight left the plugin
 // still armed on text that had been deleted underneath it.
+/**
+ * One line per block, same row as every other menu in the app.
+ *
+ * Upstream stacks a title over a description behind a 36px bordered tile,
+ * which is three times the height for one choice and reads as a settings
+ * screen. Nobody needs "Create a simple bullet list" explained next to a
+ * bullet-list icon; what they need is the list short enough to see at once.
+ */
 const EditorSlashMenu = ({ items, command }: EditorSlashMenuProps) => (
   <Command
-    className="border shadow"
+    className="w-56 shadow-popover"
     id="slash-command"
     onKeyDown={(e) => {
       e.stopPropagation();
     }}
   >
-    <CommandEmpty className="flex w-full items-center justify-center p-4 text-sm text-muted-foreground">
-      <p>No results</p>
+    <CommandEmpty className="px-2 py-3 text-[0.8125rem] text-muted-foreground">
+      No blocks match
     </CommandEmpty>
     <CommandList>
       {items.map((item) => (
-        <CommandItem
-          className="flex items-center gap-3 pr-3"
-          key={item.title}
-          onSelect={() => command(item)}
-        >
-          <div className="flex size-9 shrink-0 items-center justify-center rounded border bg-secondary">
-            <item.icon className="text-muted-foreground" size={16} />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-sm font-medium">{item.title}</span>
-            <span className="text-xs text-muted-foreground">
-              {item.description}
-            </span>
-          </div>
+        <CommandItem key={item.title} onSelect={() => command(item)}>
+          <item.icon className="text-muted-foreground" />
+          <span className="truncate">{item.title}</span>
         </CommandItem>
       ))}
     </CommandList>
