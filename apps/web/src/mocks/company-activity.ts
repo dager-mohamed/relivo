@@ -174,4 +174,4 @@ export function draftNote(
   return feedDraftNote({ kind: "company", id: company.id }, body);
 }
 
-export { now, type FeedActor, type FeedItem } from "./feed";
+export { editFeedNote, now, type FeedActor, type FeedItem } from "./feed";

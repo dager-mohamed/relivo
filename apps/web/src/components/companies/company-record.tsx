@@ -24,6 +24,7 @@ import { RecordLayout } from "#/components/record-page/record-layout";
 import {
   companyFeed,
   draftNote,
+  editFeedNote,
   now,
   type FeedItem,
 } from "#/mocks/company-activity";
@@ -53,6 +54,8 @@ export function CompanyRecord({
   const notes = feed.filter((item) => item.kind === "note");
   const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(company, body), ...current]);
+  const editNote = (id: string, body: NoteDoc) =>
+    setFeed((current) => editFeedNote(current, id, body));
 
   return (
     <RecordLayout
@@ -111,7 +114,7 @@ export function CompanyRecord({
 
         <TabsContent value="activity" className="flex flex-col gap-5 px-6 py-6">
           <NoteComposer onSubmit={addNote} />
-          <ActivityFeed items={feed} now={now} />
+          <ActivityFeed items={feed} now={now} onEditNote={editNote} />
         </TabsContent>
 
         <TabsContent value="notes" className="flex flex-col gap-5 px-6 py-6">
@@ -123,7 +126,7 @@ export function CompanyRecord({
               description="Write down what was said on a call and it stays attached to this company."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} />
+            <ActivityFeed items={notes} now={now} onEditNote={editNote} />
           )}
         </TabsContent>
       </Tabs>

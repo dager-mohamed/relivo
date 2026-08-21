@@ -11,7 +11,12 @@ import { EmptyState } from "#/components/empty-state";
 import { ActivityFeed } from "#/components/record-page/activity-feed";
 import { NoteComposer } from "#/components/record-page/note-composer";
 import { RecordPanel } from "#/components/record-page/record-panel";
-import { draftNote, now, personFeed } from "#/mocks/person-activity";
+import {
+  draftNote,
+  editFeedNote,
+  now,
+  personFeed,
+} from "#/mocks/person-activity";
 import type { FeedItem } from "#/mocks/feed";
 import type { PersonListRow } from "#/mocks/person-rows";
 
@@ -37,6 +42,8 @@ export function PersonPanel({
   const notes = feed.filter((item) => item.kind === "note");
   const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(person, body), ...current]);
+  const editNote = (id: string, body: NoteDoc) =>
+    setFeed((current) => editFeedNote(current, id, body));
 
   return (
     <RecordPanel
@@ -44,7 +51,7 @@ export function PersonPanel({
       activity={
         <>
           <NoteComposer onSubmit={addNote} />
-          <ActivityFeed items={feed} now={now} />
+          <ActivityFeed items={feed} now={now} onEditNote={editNote} />
         </>
       }
       notes={
@@ -57,7 +64,7 @@ export function PersonPanel({
               description="Write down what was said on a call and it stays attached to this person."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} />
+            <ActivityFeed items={notes} now={now} onEditNote={editNote} />
           )}
         </>
       }

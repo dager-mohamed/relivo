@@ -156,6 +156,31 @@ export function feedDraftNote(
   return feedNote(owner, `draft-${drafts}`, body, now);
 }
 
+/**
+ * Rewrite one note in place. `updatedAt` takes the wall clock rather than the
+ * fixture one — nothing renders it, and stamping it with `now` would make a
+ * note written this session look untouched after being edited.
+ */
+export function editFeedNote(
+  items: FeedItem[],
+  id: string,
+  body: NoteDoc,
+): FeedItem[] {
+  return items.map((item) =>
+    item.kind === "note" && item.id === id
+      ? {
+          ...item,
+          note: {
+            ...item.note,
+            body,
+            bodyText: noteText(body),
+            updatedAt: new Date(),
+          },
+        }
+      : item,
+  );
+}
+
 /** Newest first, which is the only order a feed is ever read in. */
 export function newestFirst(items: FeedItem[]): FeedItem[] {
   return items.sort((a, b) => b.at.getTime() - a.at.getTime());

@@ -13,6 +13,7 @@ import { RecordPanel } from "#/components/record-page/record-panel";
 import {
   companyFeed,
   draftNote,
+  editFeedNote,
   now,
   type FeedItem,
 } from "#/mocks/company-activity";
@@ -40,6 +41,8 @@ export function CompanyPanel({
   const notes = feed.filter((item) => item.kind === "note");
   const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(company, body), ...current]);
+  const editNote = (id: string, body: NoteDoc) =>
+    setFeed((current) => editFeedNote(current, id, body));
 
   return (
     <RecordPanel
@@ -54,7 +57,7 @@ export function CompanyPanel({
       activity={
         <>
           <NoteComposer onSubmit={addNote} />
-          <ActivityFeed items={feed} now={now} />
+          <ActivityFeed items={feed} now={now} onEditNote={editNote} />
         </>
       }
       notes={
@@ -67,7 +70,7 @@ export function CompanyPanel({
               description="Write down what was said on a call and it stays attached to this company."
             />
           ) : (
-            <ActivityFeed items={notes} now={now} />
+            <ActivityFeed items={notes} now={now} onEditNote={editNote} />
           )}
         </>
       }

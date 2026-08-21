@@ -9,7 +9,12 @@ import {
 import { ActivityFeed } from "#/components/record-page/activity-feed";
 import { NoteComposer } from "#/components/record-page/note-composer";
 import { RecordLayout } from "#/components/record-page/record-layout";
-import { draftNote, now, personFeed } from "#/mocks/person-activity";
+import {
+  draftNote,
+  editFeedNote,
+  now,
+  personFeed,
+} from "#/mocks/person-activity";
 import type { FeedItem } from "#/mocks/feed";
 import type { PersonListRow } from "#/mocks/person-rows";
 
@@ -35,6 +40,8 @@ export function PersonRecord({
 
   const addNote = (body: NoteDoc) =>
     setFeed((current) => [draftNote(person, body), ...current]);
+  const editNote = (id: string, body: NoteDoc) =>
+    setFeed((current) => editFeedNote(current, id, body));
 
   return (
     <RecordLayout
@@ -43,7 +50,7 @@ export function PersonRecord({
       {header}
       <div className="flex flex-col gap-5 px-6 py-6">
         <NoteComposer onSubmit={addNote} />
-        <ActivityFeed items={feed} now={now} />
+        <ActivityFeed items={feed} now={now} onEditNote={editNote} />
       </div>
     </RecordLayout>
   );

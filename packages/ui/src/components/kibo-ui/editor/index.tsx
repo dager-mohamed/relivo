@@ -12,7 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@tiptap/extension-table";
-import { TextStyleKit } from "@tiptap/extension-text-style";
 import Typography from "@tiptap/extension-typography";
 import { CharacterCount, Placeholder } from "@tiptap/extensions";
 import type { DOMOutputSpec, Node as ProseMirrorNode } from "@tiptap/pm/model";
@@ -440,7 +439,12 @@ type EditorSlashMenuProps = {
   range: Range;
 };
 
-const EditorSlashMenu = ({ items, editor, range }: EditorSlashMenuProps) => (
+// `command` from the suggestion renderer, not `item.command` directly: it
+// carries the range out of the plugin's own live state rather than out of a
+// React prop that updated one keystroke ago, and running it is what tells the
+// plugin the suggestion is over. Calling the item straight left the plugin
+// still armed on text that had been deleted underneath it.
+const EditorSlashMenu = ({ items, command }: EditorSlashMenuProps) => (
   <Command
     className="border shadow"
     id="slash-command"
@@ -456,7 +460,7 @@ const EditorSlashMenu = ({ items, editor, range }: EditorSlashMenuProps) => (
         <CommandItem
           className="flex items-center gap-3 pr-3"
           key={item.title}
-          onSelect={() => item.command({ editor, range })}
+          onSelect={() => command(item)}
         >
           <div className="flex size-9 shrink-0 items-center justify-center rounded border bg-secondary">
             <item.icon className="text-muted-foreground" size={16} />
@@ -493,10 +497,24 @@ const handleCommandNavigation = (event: KeyboardEvent) => {
   }
 };
 
+/**
+ * Structural, so callers need no `@tiptap/pm` import to write one.
+ *
+ * `pos` and not `editor.isEmpty`: decorations are computed from the document
+ * this transaction produces, while `editor.state` is still the one before it,
+ * so anything read off the editor here is one keystroke stale. `pos === 0` is
+ * the document's first block.
+ */
+export type EditorPlaceholderProps = {
+  node: { type: { name: string }; attrs: Record<string, unknown> };
+  pos: number;
+};
+
 export type EditorProviderProps = TiptapEditorProviderProps & {
   className?: string;
   limit?: number;
-  placeholder?: string;
+  /** One string for the document, or a function called per empty block. */
+  placeholder?: string | ((props: EditorPlaceholderProps) => string);
 };
 
 export const EditorProvider = ({
@@ -544,22 +562,26 @@ export const EditorProvider = ({
         color: "var(--border)",
         width: 4,
       },
+      // Off: it appends an empty paragraph whenever the last block is not one,
+      // so every slash command leaves a blank line under the block it made —
+      // which reads as the command having inserted a stray line. That
+      // paragraph is also real content, so the feed renders the gap too.
+      trailingNode: false,
     }),
     Typography,
     Placeholder.configure({
-      // Per node, not one string for the whole editor. A slash command leaves
-      // an empty block behind, and an empty heading showing the document's own
+      // Per node when the caller asks for it. A slash command leaves an empty
+      // block behind, and an empty block showing the document's own
       // placeholder looks identical to the paragraph it replaced — which reads
       // as the command having done nothing.
-      placeholder: ({ node }) => {
-        // Only the blocks that are invisible when empty. A list, a to-do and a
-        // quote each draw their own marker the moment they exist, so they
-        // already say they happened; an empty heading looks like a blank line.
-        if (node.type.name === "heading") {
-          return `Heading ${String(node.attrs.level)}`;
-        }
-        return placeholder ?? "";
-      },
+      placeholder: ({ node, pos }) =>
+        typeof placeholder === "function"
+          ? placeholder({ node, pos })
+          : (placeholder ?? ""),
+      // Every empty block, not only the one holding the caret. Otherwise the
+      // block a slash command just made goes blank the moment focus moves,
+      // and an empty heading is indistinguishable from an empty line.
+      showOnlyCurrent: false,
       includeChildren: true,
       emptyNodeClass:
         "before:text-muted-foreground/60 before:content-[attr(data-placeholder)] before:float-left before:h-0 before:pointer-events-none",
@@ -718,11 +740,14 @@ export const EditorProvider = ({
               handleCommandNavigation(event);
             },
           }}
-          extensions={[
-            ...defaultExtensions,
-            TextStyleKit,
-            ...(extensions ?? []),
-          ]}
+          // No TextStyleKit. It adds colour, font-family, font-size,
+          // line-height and background-colour marks, all of which parse from
+          // the inline `style` attributes a Google Docs or Notion paste
+          // carries — so a pasted paragraph arrives in a foreign font, and the
+          // feed, which does not render those marks, then shows it in ours.
+          // Nothing here offers a colour or font control, so the marks only
+          // ever arrive by paste.
+          extensions={[...defaultExtensions, ...(extensions ?? [])]}
           immediatelyRender={false}
           {...props}
         />

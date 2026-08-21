@@ -89,4 +89,4 @@ export function draftNote(
   return feedDraftNote({ kind: "person", id: person.id }, body);
 }
 
-export { now, type FeedItem } from "./feed";
+export { editFeedNote, now, type FeedItem } from "./feed";

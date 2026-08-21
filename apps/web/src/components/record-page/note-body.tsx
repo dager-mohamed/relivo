@@ -1,6 +1,6 @@
 import type { NoteDoc, NoteNode } from "@repo/schema";
 
-import { noteHeadingClass, safeNoteHref } from "#/text-maps";
+import { noteHeadingClass, noteMentionHref, safeNoteHref } from "#/text-maps";
 
 /**
  * Renders a note's stored document. A walk over the JSON, not an editor —
@@ -171,6 +171,27 @@ function Block({ node }: { node: NoteNode }) {
 
     case "horizontalRule":
       return <hr className="border-border" />;
+
+    case "mention": {
+      const label =
+        typeof node.attrs?.label === "string" ? node.attrs.label : null;
+      if (!label) return null;
+
+      const href = noteMentionHref(node.attrs?.href);
+      // Same chip the editor draws, so a mention does not change shape on save.
+      const chip = "rounded-sm bg-muted px-1 py-0.5 font-medium";
+
+      // A plain anchor, not a router Link: the target is a runtime string and
+      // `Link` wants a route literal. A mention is a rare click, so the full
+      // navigation costs less than untyping the route table for it.
+      return href ? (
+        <a href={href} className={`${chip} hover:bg-muted-foreground/20`}>
+          @{label}
+        </a>
+      ) : (
+        <span className={chip}>@{label}</span>
+      );
+    }
 
     case "text":
     case "hardBreak":

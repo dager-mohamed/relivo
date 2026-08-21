@@ -1,7 +1,7 @@
 import * as React from "react";
-import { LinkIcon } from "@heroicons/react/24/outline";
+import { LinkIcon, PencilIcon } from "@heroicons/react/24/outline";
 
-import type { ActivityAction } from "@repo/schema";
+import type { ActivityAction, NoteDoc } from "@repo/schema";
 import {
   Avatar,
   AvatarFallback,
@@ -9,6 +9,7 @@ import {
 } from "@repo/ui/components/avatar";
 
 import { NoteBody } from "#/components/record-page/note-body";
+import { NoteEditorFrame } from "#/components/record-page/note-editor-frame";
 import type { FeedActor, FeedItem } from "#/mocks/feed";
 import { activityActionText, formatDateTime, relativeTime } from "#/text-maps";
 
@@ -32,6 +33,7 @@ export function ActivityFeed({
   items,
   now,
   anchor = true,
+  onEditNote,
 }: {
   items: FeedItem[];
   /** Fixture clock today; `new Date()` once the data is live. */
@@ -42,6 +44,11 @@ export function ActivityFeed({
    * elements with one id, which is exactly the thing a citation cannot land on.
    */
   anchor?: boolean;
+  /**
+   * Correcting a note happens where it sits — a founder fixing a name should
+   * still see the call it belongs to. Omit to render the feed read-only.
+   */
+  onEditNote?: (id: string, body: NoteDoc) => void;
 }) {
   if (items.length === 0) return null;
 
@@ -53,7 +60,13 @@ export function ActivityFeed({
 
       {items.map((item) =>
         item.kind === "note" ? (
-          <NoteEntry key={item.id} item={item} now={now} anchor={anchor} />
+          <NoteEntry
+            key={item.id}
+            item={item}
+            now={now}
+            anchor={anchor}
+            onEdit={onEditNote}
+          />
         ) : (
           <EventEntry key={item.id} item={item} now={now} anchor={anchor} />
         ),
@@ -101,13 +114,19 @@ function NoteEntry({
   item,
   now,
   anchor,
+  onEdit,
 }: {
   item: FeedItem;
   now: Date;
   anchor: boolean;
+  onEdit?: (id: string, body: NoteDoc) => void;
 }) {
+  const [editing, setEditing] = React.useState(false);
+
   if (item.kind !== "note") return null;
   const id = anchor ? entryId(item.id) : undefined;
+  const edited =
+    item.note.updatedAt.getTime() !== item.note.createdAt.getTime();
 
   return (
     <li id={id} className="group/note flex items-start gap-3 py-2">
@@ -125,13 +144,65 @@ function NoteEntry({
           >
             {relativeTime(item.at, now)}
           </time>
-          {id ? <CopyLink id={id} /> : null}
+          {edited ? (
+            <span className="shrink-0 text-xs text-muted-foreground/70">
+              edited
+            </span>
+          ) : null}
+          <div className="ml-auto flex shrink-0 items-center">
+            {onEdit && !editing ? (
+              <EntryAction
+                label="Edit this note"
+                onClick={() => setEditing(true)}
+              >
+                <PencilIcon className="size-3.5" />
+              </EntryAction>
+            ) : null}
+            {id ? <CopyLink id={id} /> : null}
+          </div>
         </header>
+
+        {/* In place, never a modal: the note is a reply to what happened around
+            it, and losing that context to correct a sentence is backwards. */}
         <div className="pt-1.5">
-          <NoteBody doc={item.note.body} />
+          {editing && onEdit ? (
+            <NoteEditorFrame
+              initial={item.note.body}
+              saveLabel="Save"
+              onSave={(body) => {
+                onEdit(item.id, body);
+                setEditing(false);
+              }}
+              onDiscard={() => setEditing(false)}
+            />
+          ) : (
+            <NoteBody doc={item.note.body} />
+          )}
         </div>
       </article>
     </li>
+  );
+}
+
+/** Hover-revealed control in a note's header. See `CopyLink` for the reasoning. */
+function EntryAction({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] group-hover/note:opacity-100 hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+    >
+      {children}
+    </button>
   );
 }
 
@@ -155,7 +226,7 @@ function CopyLink({ id }: { id: string }) {
       type="button"
       onClick={copy}
       aria-label="Copy link to this note"
-      className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] group-hover/note:opacity-100 hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] group-hover/note:opacity-100 hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
     >
       {copied ? (
         <span className="text-[0.625rem] font-medium">✓</span>
